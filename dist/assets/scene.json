@@ -1,0 +1,484 @@
+{
+  "units": "metres",
+  "rooms": {
+    "master": {
+      "name": "Master bedroom",
+      "bounds": [
+        0,
+        6,
+        6,
+        10.5
+      ],
+      "camera": [
+        [
+          4.93,
+          6.4,
+          1.65
+        ],
+        [
+          2.72,
+          9.05,
+          0.82
+        ],
+        29
+      ]
+    },
+    "guest": {
+      "name": "Guest & reading room",
+      "bounds": [
+        6,
+        6,
+        12,
+        10.5
+      ],
+      "camera": [
+        [
+          11.45,
+          6.48,
+          1.65
+        ],
+        [
+          8.72,
+          9.02,
+          0.82
+        ],
+        30
+      ]
+    },
+    "living": {
+      "name": "Living room",
+      "bounds": [
+        0,
+        0,
+        6,
+        4.65
+      ],
+      "camera": [
+        [
+          5.46,
+          4.27,
+          1.65
+        ],
+        [
+          2.6,
+          1.75,
+          0.72
+        ],
+        27
+      ]
+    },
+    "dining": {
+      "name": "Dining room",
+      "bounds": [
+        6,
+        0,
+        12,
+        4.65
+      ],
+      "camera": [
+        [
+          6.65,
+          0.55,
+          1.65
+        ],
+        [
+          9.1,
+          2.65,
+          0.95
+        ],
+        22
+      ]
+    },
+    "hall": {
+      "name": "Gallery hall",
+      "bounds": [
+        0,
+        4.65,
+        12,
+        6
+      ]
+    }
+  },
+  "colliders": [
+    [
+      -0.09,
+      0.0,
+      0.09,
+      10.5
+    ],
+    [
+      11.91,
+      0.0,
+      12.09,
+      10.5
+    ],
+    [
+      0.0,
+      10.41,
+      0.65,
+      10.59
+    ],
+    [
+      0.6499999999999999,
+      10.41,
+      1.65,
+      10.59
+    ],
+    [
+      1.65,
+      10.41,
+      3.85,
+      10.59
+    ],
+    [
+      3.8499999999999996,
+      10.41,
+      5.0,
+      10.59
+    ],
+    [
+      5.0,
+      10.41,
+      6.65,
+      10.59
+    ],
+    [
+      6.65,
+      10.41,
+      7.65,
+      10.59
+    ],
+    [
+      7.650000000000001,
+      10.41,
+      10.3,
+      10.59
+    ],
+    [
+      10.3,
+      10.41,
+      11.400000000000002,
+      10.59
+    ],
+    [
+      11.399999999999999,
+      10.41,
+      12.0,
+      10.59
+    ],
+    [
+      0.0,
+      -0.09,
+      0.6,
+      0.09
+    ],
+    [
+      0.6000000000000001,
+      -0.09,
+      2.2,
+      0.09
+    ],
+    [
+      2.2,
+      -0.09,
+      3.8,
+      0.09
+    ],
+    [
+      3.8,
+      -0.09,
+      5.3,
+      0.09
+    ],
+    [
+      5.300000000000001,
+      -0.09,
+      7.0,
+      0.09
+    ],
+    [
+      7.0,
+      -0.09,
+      8.4,
+      0.09
+    ],
+    [
+      8.400000000000002,
+      -0.09,
+      9.8,
+      0.09
+    ],
+    [
+      9.8,
+      -0.09,
+      11.3,
+      0.09
+    ],
+    [
+      11.3,
+      -0.09,
+      12.0,
+      0.09
+    ],
+    [
+      0.0,
+      4.58,
+      4.45,
+      4.720000000000001
+    ],
+    [
+      5.65,
+      4.58,
+      7.0,
+      4.720000000000001
+    ],
+    [
+      8.2,
+      4.58,
+      12.0,
+      4.720000000000001
+    ],
+    [
+      0.0,
+      5.93,
+      4.45,
+      6.07
+    ],
+    [
+      5.65,
+      5.93,
+      7.0,
+      6.07
+    ],
+    [
+      8.2,
+      5.93,
+      12.0,
+      6.07
+    ],
+    [
+      5.93,
+      6.0,
+      6.07,
+      10.5
+    ],
+    [
+      5.93,
+      0.0,
+      6.07,
+      1.15
+    ],
+    [
+      5.93,
+      3.7000000000000006,
+      6.07,
+      4.65
+    ]
+  ],
+  "placements": [
+    {
+      "sku": "LV463-B02",
+      "instance": "LV463-B02-01",
+      "object": "SIENNA LV463-B02 | LV463-B02-01",
+      "room": "master",
+      "position": [
+        2.75,
+        9.07,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-B42",
+      "instance": "master-left",
+      "object": "SIENNA LV463-B42 | master-left",
+      "room": "master",
+      "position": [
+        1.38,
+        9.8,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-B42",
+      "instance": "master-right",
+      "object": "SIENNA LV463-B42 | master-right",
+      "room": "master",
+      "position": [
+        4.12,
+        9.8,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-B51",
+      "instance": "LV463-B51-01",
+      "object": "SIENNA LV463-B51 | LV463-B51-01",
+      "room": "master",
+      "position": [
+        5.68,
+        8.9,
+        0
+      ],
+      "rotation": -90
+    },
+    {
+      "sku": "LV463-B61",
+      "instance": "LV463-B61-01",
+      "object": "SIENNA LV463-B61 | LV463-B61-01",
+      "room": "master",
+      "position": [
+        0.34,
+        7.37,
+        0
+      ],
+      "rotation": 90
+    },
+    {
+      "sku": "LV463-B71",
+      "instance": "LV463-B71-01",
+      "object": "SIENNA LV463-B71 | LV463-B71-01",
+      "room": "master",
+      "position": [
+        0.12,
+        7.37,
+        1.03
+      ],
+      "rotation": 90
+    },
+    {
+      "sku": "LV463-B01",
+      "instance": "LV463-B01-01",
+      "object": "SIENNA LV463-B01 | LV463-B01-01",
+      "room": "guest",
+      "position": [
+        8.65,
+        9.07,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-B42",
+      "instance": "guest-left",
+      "object": "SIENNA LV463-B42 | guest-left",
+      "room": "guest",
+      "position": [
+        7.45,
+        9.8,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-B42",
+      "instance": "guest-right",
+      "object": "SIENNA LV463-B42 | guest-right",
+      "room": "guest",
+      "position": [
+        9.85,
+        9.8,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV446-L02",
+      "instance": "LV446-L02-01",
+      "object": "SIENNA LV446-L02 | LV446-L02-01",
+      "room": "guest",
+      "position": [
+        10.65,
+        7.5,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-D01",
+      "instance": "LV463-D01-01",
+      "object": "SIENNA LV463-D01 | LV463-D01-01",
+      "room": "dining",
+      "position": [
+        9.1,
+        2.35,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-D21",
+      "instance": "LV463-D21-01",
+      "object": "SIENNA LV463-D21 | LV463-D21-01",
+      "room": "dining",
+      "position": [
+        9.45,
+        4.31,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV463-L21",
+      "instance": "LV463-L21-01",
+      "object": "SIENNA LV463-L21 | LV463-L21-01",
+      "room": "hall",
+      "position": [
+        6.1,
+        5.78,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV446-L01",
+      "instance": "LV446-L01-01",
+      "object": "SIENNA LV446-L01 | LV446-L01-01",
+      "room": "living",
+      "position": [
+        2.8,
+        2.17,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV446-L11",
+      "instance": "LV446-L11-01",
+      "object": "SIENNA LV446-L11 | LV446-L11-01",
+      "room": "living",
+      "position": [
+        1.12,
+        3.68,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV446-L12",
+      "instance": "LV446-L12-01",
+      "object": "SIENNA LV446-L12 | LV446-L12-01",
+      "room": "living",
+      "position": [
+        4.5,
+        3.48,
+        0
+      ],
+      "rotation": 0
+    },
+    {
+      "sku": "LV446-L31",
+      "instance": "LV446-L31-01",
+      "object": "SIENNA LV446-L31 | LV446-L31-01",
+      "room": "living",
+      "position": [
+        2.95,
+        0.37,
+        0
+      ],
+      "rotation": 180
+    }
+  ]
+}

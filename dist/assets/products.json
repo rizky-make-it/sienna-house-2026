@@ -1,0 +1,170 @@
+[
+  {
+    "sku": "LV463-B02",
+    "name": "King Bed",
+    "dimensions": [
+      1930,
+      2125,
+      1200
+    ],
+    "room": "master",
+    "model": "assets/models/LV463-B02.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV463-B42",
+    "name": "2 Drawer & Shelf Bedside",
+    "dimensions": [
+      550,
+      400,
+      550
+    ],
+    "room": "master",
+    "model": "assets/models/LV463-B42.glb",
+    "articulations": 2
+  },
+  {
+    "sku": "LV463-B51",
+    "name": "2 Over 4 Drawers Tallboy",
+    "dimensions": [
+      900,
+      450,
+      1200
+    ],
+    "room": "master",
+    "model": "assets/models/LV463-B51.glb",
+    "articulations": 4
+  },
+  {
+    "sku": "LV463-B61",
+    "name": "3 Over 4 Drawers Dresser",
+    "dimensions": [
+      1500,
+      450,
+      800
+    ],
+    "room": "master",
+    "model": "assets/models/LV463-B61.glb",
+    "articulations": 7
+  },
+  {
+    "sku": "LV463-B71",
+    "name": "Mirror",
+    "dimensions": [
+      1000,
+      26,
+      1000
+    ],
+    "room": "master",
+    "model": "assets/models/LV463-B71.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV463-B01",
+    "name": "Queen Bed",
+    "dimensions": [
+      1630,
+      2125,
+      1200
+    ],
+    "room": "guest",
+    "model": "assets/models/LV463-B01.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV446-L02",
+    "name": "Square Coffee Table with Shelf",
+    "dimensions": [
+      900,
+      900,
+      440
+    ],
+    "room": "guest",
+    "model": "assets/models/LV446-L02.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV463-D01",
+    "name": "8-seat Rectangle Dining Table",
+    "dimensions": [
+      2200,
+      1000,
+      760
+    ],
+    "room": "dining",
+    "model": "assets/models/LV463-D01.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV463-D21",
+    "name": "3 Drawers 4 Doors Buffet",
+    "dimensions": [
+      1800,
+      450,
+      820
+    ],
+    "room": "dining",
+    "model": "assets/models/LV463-D21.glb",
+    "articulations": 7
+  },
+  {
+    "sku": "LV463-L21",
+    "name": "1 Drawer & Shelf Console",
+    "dimensions": [
+      1400,
+      400,
+      760
+    ],
+    "room": "hall",
+    "model": "assets/models/LV463-L21.glb",
+    "articulations": 1
+  },
+  {
+    "sku": "LV446-L01",
+    "name": "Rectangle Coffee Table with Shelf",
+    "dimensions": [
+      1200,
+      700,
+      440
+    ],
+    "room": "living",
+    "model": "assets/models/LV446-L01.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV446-L11",
+    "name": "1 Drawer & Shelf Lamp Table",
+    "dimensions": [
+      550,
+      550,
+      550
+    ],
+    "room": "living",
+    "model": "assets/models/LV446-L11.glb",
+    "articulations": 1
+  },
+  {
+    "sku": "LV446-L12",
+    "name": "Sofa Table",
+    "dimensions": [
+      460,
+      250,
+      500
+    ],
+    "room": "living",
+    "model": "assets/models/LV446-L12.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV446-L31",
+    "name": "4 Doors & Shelf TV Unit",
+    "dimensions": [
+      1800,
+      440,
+      550
+    ],
+    "room": "living",
+    "model": "assets/models/LV446-L31.glb",
+    "articulations": 4
+  }
+]

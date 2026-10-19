@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SIENNA — A home, considered.</title>
+  <meta name="description" content="Jelajahi koleksi SIENNA 2026 dalam satu rumah 3D. Empat ruang terhubung, empat belas produk, detail Warm Brown ash dan aksen kuningan.">
+  <meta name="theme-color" content="#eeeae1"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+<header class="header">
+  <a class="wordmark" href="#" aria-label="SIENNA, beranda">SIENNA<span>THE 2026 COLLECTION</span></a>
+  <button class="menu-toggle" aria-label="Buka navigasi" aria-expanded="false" aria-controls="nav">Menu <span>＋</span></button>
+  <nav id="nav" aria-label="Navigasi utama"><a href="#tour">Room tour</a><a href="#collection">Koleksi</a><a href="#materials">Material</a><a class="nav-download" href="#downloads">Unduh proyek <span>↗</span></a></nav>
+</header>
+<main id="main">
+<section class="hero" aria-labelledby="hero-title">
+  <img class="hero-image" src="assets/master.jpg" alt="Model kamar SIENNA dengan tempat tidur chevron ash, bedding putih, dan rangka kuningan" fetchpriority="high" width="1920" height="1080">
+  <div class="hero-shade"></div>
+  <div class="hero-top"><span>WARM BROWN. QUIETLY DISTINCTIVE.</span><span>01 — MASTER BEDROOM</span></div>
+  <div class="hero-content"><p class="eyebrow">SIENNA / A CONNECTED HOME</p><h1 id="hero-title">A home,<br><em>considered.</em></h1><p>Serat kayu yang bercerita. Detail yang terasa.<br>Satu koleksi, di dalam rumah yang utuh.</p><a class="button light" href="#tour" data-enter-tour>Masuki rumah <span>↗</span></a></div>
+  <div class="hero-bottom"><span>VIC ASH VENEER · LCV09 WARM BROWN</span><a href="#collection">TEMUKAN KOLEKSI <span>↓</span></a></div>
+</section>
+<section class="intro wrap">
+  <p class="eyebrow">THE ART OF LIVING TOGETHER</p>
+  <h2>Berbeda ruang.<br><em>Satu bahasa desain.</em></h2>
+  <div class="intro-copy"><p>Warm Brown ash, pola veneer chevron, dan garis kuningan yang ringan. Koleksi SIENNA hadir dalam rumah virtual yang menghubungkan ruang istirahat, berkumpul, dan berbagi.</p><p class="quiet">Rekonstruksi 3D berdasarkan katalog SIENNA 2026. Arsitektur dan elemen pelengkap merupakan interpretasi desain.</p><div class="facts"><span><strong>14</strong> produk katalog</span><span><strong>04</strong> ruang utama</span><span><strong>01</strong> rumah terhubung</span></div></div>
+</section>
+<section id="tour" class="tour-section" aria-labelledby="tour-title">
+  <div class="section-heading wrap"><div><p class="eyebrow">EXPLORE AT YOUR OWN PACE</p><h2 id="tour-title">Step inside.</h2></div><p>Berjalan antar-ruang. Dekati produknya.<br>Buka laci, lihat apa yang ada di dalam.</p></div>
+  <div class="tour-shell wrap">
+    <aside class="room-sidebar"><p class="eyebrow">PILIH RUANG</p><div class="room-list" role="group" aria-label="Pindah ruang">
+      <button data-room="master" aria-pressed="true"><span>01</span>Master bedroom <i>↗</i></button>
+      <button data-room="guest" aria-pressed="false"><span>02</span>Guest & reading <i>↗</i></button>
+      <button data-room="living" aria-pressed="false"><span>03</span>Living room <i>↗</i></button>
+      <button data-room="dining" aria-pressed="false"><span>04</span>Dining room <i>↗</i></button>
+      <button data-room="hall" aria-pressed="false"><span>05</span>Gallery hall <i>↗</i></button></div>
+      <button id="map-toggle" class="text-button" aria-expanded="true" aria-controls="floor-map">Denah rumah <span>−</span></button>
+      <svg id="floor-map" viewBox="0 0 240 220" role="img" aria-label="Denah: master dan guest di utara, living dan dining di selatan, tersambung koridor">
+        <path d="M5 5H235V207H5Z M120 5V91 M120 118V140 M120 190V207 M5 91H90 M113 91H140 M163 91H235 M5 118H90 M113 118H140 M163 118H235" fill="none" stroke="currentColor" stroke-width="2"/>
+        <g fill="currentColor" font-size="10" text-anchor="middle"><text x="61" y="51">MASTER</text><text x="178" y="51">GUEST</text><text x="61" y="169">LIVING</text><text x="178" y="169">DINING</text><text x="120" y="108" font-size="8">GALLERY HALL</text></g>
+        <circle id="map-dot" cx="99" cy="84" r="4" fill="#c8a569"/></svg>
+      <p class="sidebar-note">Denah konseptual · bukan denah pabrikan.<br>Semua ukuran produk dalam skala metrik.</p>
+    </aside>
+    <div class="viewer" id="viewer">
+      <canvas id="canvas" tabindex="0" aria-label="Room tour 3D interaktif. Geser untuk melihat; WASD atau tombol layar untuk berjalan."></canvas>
+      <div id="load-screen" class="load-screen"><img src="assets/master.jpg" alt="Pratinjau render kamar SIENNA" width="960" height="540"><div><span class="eyebrow">YOUR PRIVATE VIEWING</span><h3>Make yourself<br><em>at home.</em></h3><button id="load-tour" class="button light">Mulai room tour <span>↗</span></button><p id="load-status" role="status">Model rumah ±8 MB · dimuat saat dibuka</p></div></div>
+      <div class="viewer-top" hidden id="viewer-tools"><span id="view-label">Master bedroom</span><div class="view-modes" role="group" aria-label="Mode kamera"><button id="walk-mode" aria-pressed="true">Jelajah</button><button id="orbit-mode" aria-pressed="false">Orbit rumah</button><button id="back-house" hidden>← Rumah</button></div><button id="help-toggle" aria-label="Panduan kontrol" aria-expanded="false">?</button><button id="fullscreen" aria-label="Layar penuh">⛶</button></div>
+      <div id="viewer-help" class="viewer-help" hidden><strong>Take a closer look</strong><p>Geser tampilan untuk menoleh. Gunakan W A S D / panah atau tombol gerak untuk berjalan. Scroll untuk zoom.</p><p>Klik furnitur untuk detail, lalu pilih Inspeksi untuk orbit produk. Tombol Buka menggerakkan laci atau pintunya.</p><p>Mode Orbit rumah memperlihatkan seluruh denah tanpa atap. Tekan Esc untuk kembali.</p><button id="close-help" class="text-button">Mengerti <span>×</span></button></div>
+      <div class="viewer-bottom" id="viewer-bottom" hidden><span id="view-hint">GESER UNTUK MELIHAT · KLIK FURNITUR</span><button id="reset-view" aria-label="Reset kamera">↺ Reset</button></div>
+      <div class="walk-pad" id="walk-pad" hidden role="group" aria-label="Gerakan dalam rumah"><button data-move="forward" aria-label="Jalan maju">↑</button><button data-move="left" aria-label="Jalan kiri">←</button><button data-move="back" aria-label="Jalan mundur">↓</button><button data-move="right" aria-label="Jalan kanan">→</button></div>
+      <div id="selection" class="selection" hidden><button id="close-selection" aria-label="Tutup detail produk">×</button><p class="eyebrow" id="selected-sku"></p><h3 id="selected-name"></h3><p id="selected-dimensions"></p><div class="selection-actions"><button id="inspect-product" class="button small">Inspeksi 3D ↗</button><button id="open-parts" class="text-button" hidden>Buka laci / pintu</button></div><a id="download-product" download>Unduh GLB ↓</a></div>
+    </div>
+  </div><p class="tour-footnote wrap">Browser memakai model yang dioptimalkan dan pencahayaan real-time. Untuk hasil ray-traced, lihat render Cycles 4K di bawah.</p>
+</section>
+<section id="collection" class="collection wrap" aria-labelledby="collection-title">
+  <div class="section-heading"><div><p class="eyebrow">FOURTEEN PIECES. ONE COLLECTION.</p><h2 id="collection-title">The Sienna edit.</h2></div><p>Ukuran asli katalog.<br>Setiap produk, dalam tiga dimensi.</p></div>
+  <div class="collection-tools"><div class="filters" role="group" aria-label="Filter kategori"><button data-filter="all" aria-pressed="true">Semua <sup>14</sup></button><button data-filter="bedroom" aria-pressed="false">Bedroom</button><button data-filter="living" aria-pressed="false">Living</button><button data-filter="dining" aria-pressed="false">Dining & hall</button></div><label class="search"><span class="sr-only">Cari nama atau SKU</span><input id="product-search" placeholder="Cari nama / SKU" type="search"><span aria-hidden="true">⌕</span></label></div>
+  <p class="catalogue-note">Gambar produk di bawah adalah referensi katalog asli. Pilih produk untuk membuka model 3D hasil rekonstruksi.</p>
+  <div id="products" class="product-grid" aria-live="polite"></div><p id="no-products" hidden>Tidak ada produk yang cocok. Coba nama atau SKU lainnya.</p>
+</section>
+<section class="gallery wrap" aria-labelledby="gallery-title"><div class="section-heading"><div><p class="eyebrow">LIGHT, SPACE & TEXTURE</p><h2 id="gallery-title">A different point of view.</h2></div><p>Empat render asli Blender Cycles.<br>UHD 4K · 3840 × 2160.</p></div><div class="gallery-grid">
+  <button data-render="master"><img src="assets/master.jpg" alt="Render 4K master bedroom dengan King Bed SIENNA" loading="lazy" width="960" height="540"><span><b>01 / Master bedroom</b><i>Lihat render ↗</i></span></button>
+  <button data-render="dining"><img src="assets/dining.jpg" alt="Render 4K meja makan 8 kursi dan buffet SIENNA" loading="lazy" width="960" height="540"><span><b>02 / Dining room</b><i>Lihat render ↗</i></span></button>
+  <button data-render="living"><img src="assets/living.jpg" alt="Render 4K ruang keluarga dengan coffee table dan TV unit SIENNA" loading="lazy" width="960" height="540"><span><b>03 / Living room</b><i>Lihat render ↗</i></span></button>
+  <button data-render="guest"><img src="assets/guest.jpg" alt="Render 4K guest bedroom dengan Queen Bed dan reading nook" loading="lazy" width="960" height="540"><span><b>04 / Guest & reading</b><i>Lihat render ↗</i></span></button></div></section>
+<section id="materials" class="materials"><div class="material-photo"><img src="assets/detail-wood.jpg" alt="Detail ray-traced chevron veneer ash dan handle kuningan model SIENNA" loading="lazy" width="1200" height="1400"><span>THE SIGNATURE / CHEVRON VENEER</span></div><div class="material-story"><p class="eyebrow">MATERIAL MATTERS</p><h2>Warm by nature.<br><em>Precise by design.</em></h2><p>Bukan sekadar warna cokelat. Arah serat bertemu dalam pola chevron, dibingkai garis metal yang halus. Tekstur ash hasil fotografi dipadukan dengan bevel, roughness, dan normal map untuk menangkap perubahan cahaya.</p><dl><div><dt>01 / TIMBER</dt><dd>Veneer / Vic Ash Timber<br>Interpretasi finish LCV09 Warm Brown</dd></div><div><dt>02 / METAL</dt><dd>Rangka ramping, detail sikat halus<br>Warna kuningan sesuai referensi</dd></div><div><dt>03 / TEXTILE</dt><dd>Bedding putih bergaris<br>Lipatan geometri, serat tenun, jahitan tepi</dd></div></dl><a class="text-link" href="#tour" data-enter-tour>Lihat lebih dekat dalam 3D <span>↗</span></a></div></section>
+<section id="downloads" class="downloads wrap"><div><p class="eyebrow">FROM VIEWING TO MAKING</p><h2>Yours to explore.<br><em>And build upon.</em></h2><p>File kerja Blender dengan tekstur terkemas, model web, dan render asli. Website terpisah, siap dikelola melalui GitHub dan Vercel.</p></div><div class="download-list">
+  <a href="downloads/sienna-house.blend" download><span><b>Blender master scene</b><small>Rumah lengkap · 14 SKU · tekstur terkemas</small></span><span>.BLEND ↓</span></a>
+  <a href="assets/sienna-house.glb" download><span><b>Interactive house model</b><small>Mesh teroptimasi · produk & poros interaksi</small></span><span>.GLB ↓</span></a>
+  <a href="downloads/sienna-project.zip" download><span><b>Blender project & rebuild scripts</b><small>Script, tekstur, metadata, dokumentasi</small></span><span>.ZIP ↓</span></a>
+  <a href="downloads/SIENNA-CATALOGUE-2026.pdf" download><span><b>Original catalogue</b><small>Sumber referensi · 6 halaman</small></span><span>.PDF ↓</span></a>
+  <a href="downloads/README.txt" download><span><b>Deploy & project guide</b><small>Cara menjalankan, GitHub → Vercel, dan catatan model</small></span><span>.TXT ↓</span></a>
+  <a href="https://github.com/rizky-make-it/sienna-house-2026" target="_blank" rel="noopener"><span><b>Website source repository</b><small>Repository baru · privat · akses dengan akun pemilik</small></span><span>GITHUB ↗</span></a>
+  <p>Render lossless 4K tersedia melalui galeri. Model tiap SKU tersedia melalui panel inspeksi.</p></div></section>
+</main>
+<footer><a class="wordmark" href="#">SIENNA</a><p>THE COLLECTION, AT HOME.</p><div><span>Studi visual berdasarkan SIENNA Catalogue 2026.</span><span>Bukan CAD pabrikan. Detail tersembunyi dan ruang diinterpretasikan.</span><a href="credits.html">Sumber & lisensi ↗</a></div><small>2026 / DIGITAL COLLECTION STUDY</small></footer>
+<dialog id="render-dialog" aria-labelledby="render-caption"><button id="close-render" aria-label="Tutup render">×</button><img id="render-image" alt=""><div><p id="render-caption"></p><a id="render-download" class="button light" download>Unduh PNG 4K ↓</a></div></dialog>
+<div id="notification" role="status" class="notification" hidden></div>
+</body></html>

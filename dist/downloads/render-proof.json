@@ -1,0 +1,26 @@
+{
+  "dining-4k.png": {
+    "width": 3840,
+    "height": 2160,
+    "bytes": 9305480,
+    "sha256": "6041a3093131fc7d8de3e74c192fd0e09767399707ec86c16de9ff32a7f08ab3"
+  },
+  "guest-4k.png": {
+    "width": 3840,
+    "height": 2160,
+    "bytes": 9229085,
+    "sha256": "1345345bc5b6dc337013bca483604b992c04d21cca1d9e9a8446947d8a0dea48"
+  },
+  "living-4k.png": {
+    "width": 3840,
+    "height": 2160,
+    "bytes": 8635950,
+    "sha256": "64e49a2553b9fc8823ec8fc4436c6ad54e53695509dd3bb7775c80bc54d4a3ab"
+  },
+  "master-4k.png": {
+    "width": 3840,
+    "height": 2160,
+    "bytes": 9493281,
+    "sha256": "bfbc468e5c95ffb2a5985fafee0cfd353f81f28d67b44163a19f806d2467da68"
+  }
+}
