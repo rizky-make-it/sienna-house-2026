@@ -2,7 +2,8 @@
 
 Website 3D terpisah untuk SIENNA Catalogue 2026. Tidak mengganti proyek Ruang.
 
-Repository baru (privat): https://github.com/rizky-make-it/sienna-house-2026
+Repository publik: https://github.com/rizky-make-it/sienna-house-2026
+Website GitHub Pages: https://rizky-make-it.github.io/sienna-house-2026/
 
 ## Menjalankan lokal
 
@@ -12,18 +13,20 @@ Repository baru (privat): https://github.com/rizky-make-it/sienna-house-2026
    pemuatan model GLB membutuhkan server HTTP.
 4. Tidak perlu npm install / build. Three.js 0.186.1, Draco, dan font disimpan lokal.
 
-## GitHub → Vercel
+## Hosting GitHub Pages
 
-1. Push seluruh folder website ke repository baru (termasuk dist).
-2. Di Vercel, Add New → Project → Import repository tersebut.
-3. Framework Preset: Other. Root Directory: repository root.
-4. Build Command: kosong. Output Directory: dist. Install Command: kosong.
-5. Deploy. vercel.json sudah mendeklarasikan outputDirectory.
-6. Perubahan yang dipush ke main dapat dideploy otomatis setelah integrasi Git
-   diaktifkan di Vercel. Tidak ada API key atau backend yang diperlukan website.
+1. GitHub repository → Settings → Pages → Source: GitHub Actions.
+2. Push perubahan ke branch main. Workflow .github/workflows/pages.yml
+   memvalidasi model dan render, lalu menerbitkan folder dist saja.
+3. Pantau hasil di tab Actions → Deploy SIENNA to GitHub Pages.
+4. Deploy manual: pilih workflow tersebut → Run workflow → main.
+5. Alamat website: https://rizky-make-it.github.io/sienna-house-2026/
+6. Aset memakai path relatif agar tetap bekerja di subfolder nama repository.
+   Tidak perlu npm install, build, API key, backend, atau Vercel.
 
-Manifest .openai/hosting.json hanya dipakai deployment Sites, bukan Vercel.
+Manifest .openai/hosting.json hanya dipakai deployment Sites, bukan GitHub Pages.
 Jangan mempublikasikan token / credential / folder .local atau .vercel.
+Repository dan website ini publik; file Blender, model, serta katalog dapat diunduh.
 
 ## Penggunaan
 
