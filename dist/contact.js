@@ -1,4 +1,4 @@
-import { contactConfig } from './contact-config.js';
+import { contactConfig } from './contact-config.js?v=rizky-profile-1';
 
 export function normalizeWhatsAppNumber(value) {
   const number = String(value ?? '').trim().replace(/[\s()+.-]/g, '');

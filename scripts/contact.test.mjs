@@ -1,6 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeWhatsAppNumber, buildWhatsAppUrl, getContactWhatsAppUrl } from '../dist/contact.js';
+import { contactConfig } from '../dist/contact-config.js';
+
+test('published contact uses the creator-provided WhatsApp number, not the demo', () => {
+  assert.equal(contactConfig.creator, 'Muhammad Rizky');
+  assert.equal(contactConfig.placeholder, false);
+  assert.equal(contactConfig.whatsappNumber, '6281393177004');
+  const url = new URL(getContactWhatsAppUrl(contactConfig, 'the SIENNA project files', 'https://example.com/'));
+  assert.equal(url.pathname, '/6281393177004');
+});
 
 test('accepts international format and removes display punctuation', () => {
   assert.equal(normalizeWhatsAppNumber('+1 (555) 123-4567'), '15551234567');

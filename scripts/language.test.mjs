@@ -31,12 +31,24 @@ test('English controls, accessible labels, and all-file requests are present', a
 });
 
 test('translated entry point and dependent modules bypass stale cached copy', async () => {
-  assert.match(await read('dist/index.html'), /app\.js\?v=mobile-nav-1/);
+  assert.match(await read('dist/index.html'), /app\.js\?v=rizky-profile-1/);
   const app = await read('dist/app.js');
   assert.match(app, /tour\.js\?v=mobile-nav-1/);
-  assert.match(app, /contact\.js\?v=mobile-nav-1/);
+  assert.match(app, /contact\.js\?v=rizky-profile-1/);
+  assert.match(await read('dist/contact.js'), /contact-config\.js\?v=rizky-profile-1/);
 });
 
 test('public project guide matches the English repository guide', async () => {
   assert.equal(await read('dist/downloads/README.txt'), await read('README.md'));
+});
+
+test('contact pop-up uses the supplied avatar, English invitation, and public WhatsApp number', async () => {
+  const html = await read('dist/index.html');
+  assert.ok(html.includes('Want a project like this? Get in touch with me on WhatsApp.'));
+  assert.ok(html.includes('src="assets/muhammad-rizky-avatar.jpg"'));
+  assert.ok(html.includes('WhatsApp · +62 813-9317-7004'));
+  assert.ok(html.includes('Chat with me on WhatsApp'));
+  const avatar = await readFile(new URL('../dist/assets/muhammad-rizky-avatar.jpg', import.meta.url));
+  assert.equal(avatar.readUInt16BE(0), 0xffd8);
+  assert.ok(avatar.length > 0);
 });

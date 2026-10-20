@@ -1,5 +1,5 @@
 import {initTour,start,inspect} from './tour.js?v=mobile-nav-1';
-import {initContact,syncDialogScroll} from './contact.js?v=mobile-nav-1';
+import {initContact,syncDialogScroll} from './contact.js?v=rizky-profile-1';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let allProducts=[],filter='all',noticeTimer;
 const roomCategory=p=>p.sku.startsWith('LV463-B')?'bedroom':p.sku.startsWith('LV446')?'living':'dining';

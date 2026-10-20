@@ -20,12 +20,16 @@ try{
   await evaluate(`document.querySelector(${s}).click()`);
   assert.equal(await evaluate(`document.querySelector('#contact-dialog').open`),true);
   assert.equal(await evaluate(`document.querySelector('#contact-request').textContent`),request);
+  assert.equal(await evaluate(`document.querySelector('#contact-intro').textContent`),'Want a project like this? Get in touch with me on WhatsApp.');
+  assert.equal(await evaluate(`document.querySelector('.contact-number').textContent`),'WhatsApp · +62 813-9317-7004');
+  await until(`document.querySelector('.author-avatar').complete&&document.querySelector('.author-avatar').naturalWidth===554`,10);
   assert.equal(await evaluate(`document.body.style.overflow`),'hidden');
   const href=await evaluate(`document.querySelector('#contact-whatsapp').getAttribute('href')`);
   if(contactActive){
    const url=new URL(href);assert.equal(url.origin,'https://wa.me');assert.equal(url.pathname,'/'+normalizeWhatsAppNumber(contactConfig.whatsappNumber));
    assert.ok(url.searchParams.get('text').includes(request));assert.ok(url.searchParams.get('text').includes('Muhammad Rizky'));
    assert.equal(await evaluate(`document.querySelector('#contact-unavailable').hidden`),true);
+   assert.equal(await evaluate(`document.querySelector('#contact-whatsapp').hasAttribute('aria-disabled')`),false);
   }else{
    assert.equal(href,null);assert.equal(await evaluate(`document.querySelector('#contact-unavailable').hidden`),false);
    assert.equal(await evaluate(`document.querySelector('#contact-whatsapp').getAttribute('aria-disabled')`),'true');

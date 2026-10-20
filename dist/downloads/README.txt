@@ -24,10 +24,11 @@ remain active. The original house version is preserved separately in the workspa
 All file-request buttons open a contact pop-up and prepare a WhatsApp message
 identifying the selected file or SKU. Messages are never sent automatically.
 The public destination is configured in dist/contact-config.js using international
-format (country code, without a leading local zero). Currently placeholder=true
-with the example number 6200000000000: the pop-up works, but never opens a chat
-with that example number. To enable chat, replace whatsappNumber with your real
-number and set placeholder to false. Deployment rejects invalid number formats.
+format (country code, without a leading local zero). Live contact is enabled with
+the creator-provided number +62 813-9317-7004 (6281393177004), with placeholder=false.
+The pop-up uses the supplied profile illustration and the English invitation:
+“Want a project like this? Get in touch with me on WhatsApp.”
+To disable chat temporarily, set placeholder to true. Deployment rejects invalid number formats.
 Creator credits appear in the footer and on the sources and licences page.
 
 This changes the UI flow, not access control. The public repository and static
