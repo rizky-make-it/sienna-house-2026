@@ -6,7 +6,7 @@ const read = file => readFile(new URL('../' + file, import.meta.url), 'utf8');
 // Regression guard for the previous Indonesian copy, including non-visible states.
 const legacyCopy = /\b(?:tembok|pameran|silakan|belum|memuat|pilih|buka|tutup|unduh|minta|semua|dibuat|oleh|lebar|kedalaman|tinggi|geser|untuk|referensi|katalog|sumber|lisensi|beranda|halaman|nomor|dikirim|pesan|kreator|seluruh|yang|dengan|tidak|kembali|jelajah|inspeksi|visualisasi)\b/i;
 
-for (const file of ['index.html', 'credits.html', 'app.js', 'tour.js', 'contact.js', 'downloads/README.txt']) {
+for (const file of ['index.html', 'credits.html', 'app.js', 'tour.js', 'touch-controls.js', 'contact.js', 'downloads/README.txt']) {
   test(`${file} contains no legacy Indonesian interface copy`, async () => {
     assert.doesNotMatch(await read('dist/' + file), legacyCopy);
   });
@@ -31,10 +31,10 @@ test('English controls, accessible labels, and all-file requests are present', a
 });
 
 test('translated entry point and dependent modules bypass stale cached copy', async () => {
-  assert.match(await read('dist/index.html'), /app\.js\?v=english-1/);
+  assert.match(await read('dist/index.html'), /app\.js\?v=mobile-nav-1/);
   const app = await read('dist/app.js');
-  assert.match(app, /tour\.js\?v=english-1/);
-  assert.match(app, /contact\.js\?v=english-1/);
+  assert.match(app, /tour\.js\?v=mobile-nav-1/);
+  assert.match(app, /contact\.js\?v=mobile-nav-1/);
 });
 
 test('public project guide matches the English repository guide', async () => {

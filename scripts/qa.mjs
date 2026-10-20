@@ -3,6 +3,7 @@ import {contactConfig} from '../dist/contact-config.js';import {normalizeWhatsAp
 const root=fileURLToPath(new URL('../',import.meta.url)),out=path.join(root,'.local');await mkdir(out,{recursive:true});const preliminary=process.argv.includes('--preliminary'),pause=ms=>new Promise(r=>setTimeout(r,ms)),siteUrl=process.argv.find(arg=>arg.startsWith('--url='))?.slice(6)||'http://127.0.0.1:4174/',remote=new URL(siteUrl).hostname!=='127.0.0.1';
 const contactOnly=process.argv.includes('--contact-only');
 const coldProductOnly=process.argv.includes('--cold-product-only');
+const mobileNavigationOnly=process.argv.includes('--mobile-navigation-only');
 const contactActive=Boolean(contactConfig.whatsappNumber&&!contactConfig.placeholder);
 const browser=spawn('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',['--headless=new','--no-first-run','--no-default-browser-check','--disable-background-networking','--remote-debugging-port=9228','--enable-unsafe-swiftshader','--use-angle=swiftshader',`--user-data-dir=${path.join(out,'chrome-profile')}`,'about:blank'],{windowsHide:true,stdio:'ignore'});
 let socket,browserSocket;
@@ -62,7 +63,68 @@ try{
   const report={ok:true,siteUrl,coldProductInspection:true,selectedSKU:'LV446-L12',mobileOverview:true,wholeExhibitionFits:true,contactRequest:true,errors,consoleErrors,httpErrors};
   await writeFile(path.join(out,remote?'qa-cold-product-live.json':'qa-cold-product-local.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
  }
- if(!contactOnly&&!coldProductOnly){
+ if(mobileNavigationOnly){
+  await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
+  const touch=async(type,points=[])=>send('Input.dispatchTouchEvent',{type,touchPoints:points.map(p=>({...p,radiusX:6,radiusY:6,force:1}))});
+  const tap=async selector=>{
+   const s=JSON.stringify(selector);await evaluate(`document.querySelector(${s}).scrollIntoView({block:'center',behavior:'instant'})`);await pause(100);
+   const p=await evaluate(`(()=>{const r=document.querySelector(${s}).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+   await touch('touchStart',[{id:1,...p}]);await touch('touchEnd');await pause(120);
+  };
+  const chooseZone=async(id,expanded=false)=>evaluate(`(()=>{const select=document.querySelector(${JSON.stringify(expanded?'#expanded-zone-select':'#zone-select')});select.value=${JSON.stringify(id)};select.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  for(const[width,height]of[[320,568],[360,740],[390,844],[430,932]]){
+   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true});
+   assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true,`Overflow at ${width}px`);
+   assert.equal(await evaluate(`document.querySelector('#zone-select').getBoundingClientRect().height>=48`),true);
+   assert.equal(await evaluate(`[...document.querySelectorAll('.mobile-shortcuts a')].every(el=>el.getBoundingClientRect().height>=44)`),true);
+  }
+  await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+  await tap('.mobile-shortcuts a[href="#tour"]');await chooseZone('dining');await chooseZone('master');await until(`sienna.ready&&sienna.frames>0&&sienna.mode==='walk'&&sienna.room==='master'`,150);await chooseZone('overview');assert.equal(await evaluate('sienna.mode'),'orbit');
+  await evaluate(`document.querySelector('#viewer-stage').scrollIntoView({block:'center',behavior:'instant'})`);await pause(400);
+  const initialDistance=await evaluate('sienna.zoomDistance');await tap('#zoom-in');assert.ok((await evaluate('sienna.zoomDistance'))<initialDistance);await tap('#zoom-out');
+  const center=await evaluate(`(()=>{const r=document.querySelector('#canvas').getBoundingClientRect();return{x:r.x+r.width*.55,y:r.y+r.height*.5}})()`);
+  const pinchDistance=await evaluate('sienna.zoomDistance');
+  await touch('touchStart',[{id:1,x:center.x-28,y:center.y},{id:2,x:center.x+28,y:center.y}]);
+  await touch('touchMove',[{id:1,x:center.x-60,y:center.y},{id:2,x:center.x+60,y:center.y}]);await touch('touchEnd');await pause(250);
+  assert.ok((await evaluate('sienna.zoomDistance'))<pinchDistance,'Two-finger pinch zoom failed');assert.equal(await evaluate('sienna.selected'),null,'Pinch incorrectly selects furniture');
+  for(const id of['master','guest','dining','hall','living']){await chooseZone(id);assert.equal(await evaluate('sienna.mode'),'walk');assert.equal(await evaluate('sienna.room'),id);}
+  await evaluate(`document.querySelector('#viewer-stage').scrollIntoView({block:'center',behavior:'instant'})`);await pause(300);
+  assert.equal(await evaluate(`getComputedStyle(document.querySelector('#walk-pad')).display`),'none');
+  const points=await evaluate(`(()=>{const j=document.querySelector('#joystick').getBoundingClientRect(),r=document.querySelector('#canvas').getBoundingClientRect();return{j:{x:j.x+j.width/2,y:j.y+j.height/2},look:{x:r.x+r.width*.7,y:r.y+r.height*.45}}})()`);
+  const before=await evaluate('sienna.position');const orientation=await evaluate('sienna.orientation');
+  await touch('touchStart',[{id:1,...points.j}]);await touch('touchMove',[{id:1,x:points.j.x,y:points.j.y-34}]);
+  await until('Math.hypot(sienna.movement.x,sienna.movement.y)>.5',5);await pause(500);
+  await touch('touchStart',[{id:1,x:points.j.x,y:points.j.y-34},{id:2,...points.look}]);
+  await touch('touchMove',[{id:1,x:points.j.x,y:points.j.y-34},{id:2,x:points.look.x+55,y:points.look.y+10}]);await pause(150);
+  await until(`JSON.stringify(sienna.orientation)!==${JSON.stringify(JSON.stringify(orientation))}`,10);
+  assert.notDeepEqual(await evaluate('sienna.orientation'),orientation,'Second thumb does not look around');
+  assert.ok(Math.hypot(...Object.values(await evaluate('sienna.movement')))>.5,'Looking interrupts joystick');
+  await touch('touchEnd');await until('Math.hypot(sienna.movement.x,sienna.movement.y)===0',5);
+  const after=await evaluate('sienna.position');assert.ok(Math.hypot(after[0]-before[0],after[2]-before[2])>.05,'Joystick did not move the camera');
+  await pause(350);assert.deepEqual(await evaluate('sienna.position'),after,'Movement continues after release');
+  await touch('touchStart',[{id:1,...points.j}]);await touch('touchMove',[{id:1,x:points.j.x+30,y:points.j.y}]);await touch('touchCancel');await until('Math.hypot(sienna.movement.x,sienna.movement.y)===0',5);
+  await shot('mobile-touch-walk.png');
+  await chooseZone('master');await evaluate(`document.querySelector('#viewer-stage').scrollIntoView({block:'center',behavior:'instant'})`);await pause(300);
+  const productPoint=await evaluate(`sienna.productScreenPoint('LV463-B02')`);await touch('touchStart',[{id:1,...productPoint}]);await touch('touchEnd');await until(`sienna.selected==='LV463-B02'`,10);
+  assert.equal(await evaluate(`document.querySelector('#selection').getBoundingClientRect().top>=document.querySelector('#viewer-stage').getBoundingClientRect().bottom-1`),true,'Product panel covers the touch controls');
+  await tap('#inspect-product');await until(`sienna.mode==='product'&&sienna.selected==='LV463-B02'`,100);await pause(700);assert.equal(await evaluate(`document.querySelector('#viewer-stage').getBoundingClientRect().top>=-1`),true,'Product inspection scrolls the camera controls off screen');await shot('mobile-touch-product.png');
+  await tap('#fullscreen');assert.equal(await evaluate(`document.querySelector('#viewer').classList.contains('is-expanded')`),true);assert.equal(await evaluate(`document.body.style.overflow`),'hidden');
+  await tap('#download-product');assert.equal(await evaluate(`document.querySelector('#contact-dialog').open`),true);await tap('#close-contact');assert.equal(await evaluate(`document.body.style.overflow`),'hidden','Closing contact unlocks the expanded background');
+  await chooseZone('living',true);assert.equal(await evaluate('sienna.mode'),'walk');assert.equal(await evaluate('sienna.room'),'living');
+  for(const[width,height]of[[320,568],[390,844],[844,390]]){
+   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true});await pause(250);
+   assert.equal(await evaluate(`document.querySelector('#viewer').getBoundingClientRect().height<=innerHeight+1`),true);
+   assert.equal(await evaluate(`document.querySelector('#viewer').scrollWidth<=innerWidth`),true);
+   assert.equal(await evaluate(`[...document.querySelectorAll('#viewer-tools button,#zoom-controls button')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.width>=44&&r.height>=44})`),true,'Undersized mobile touch target');
+  }
+  await shot('mobile-touch-landscape.png');await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await pause(200);await shot('mobile-touch-expanded.png');
+  await tap('#fullscreen');assert.equal(await evaluate(`document.body.style.overflow`),'');assert.equal(await evaluate(`getComputedStyle(document.querySelector('.mobile-shortcuts')).display`),'grid');
+  await tap('.mobile-shortcuts a[href="#collection"]');assert.equal(await evaluate('location.hash'),'#collection');
+  assert.deepEqual(errors,[]);assert.deepEqual(consoleErrors,[]);assert.deepEqual(httpErrors,[]);
+  const report={ok:true,siteUrl,mobileSizes:[320,360,390,430],landscape:[844,390],realTouch:true,joystick:true,simultaneousMoveAndLook:true,stopsOnReleaseAndCancel:true,pinchZoom:true,zoomButtons:true,allFiveZones:true,latestZoneDuringLoading:true,productPanelBelowCanvas:true,expandedView:true,expandedZonePicker:true,contactScrollLock:true,quickNavigation:true,errors,consoleErrors,httpErrors};
+  await writeFile(path.join(out,remote?'qa-mobile-navigation-live.json':'qa-mobile-navigation-local.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+ }
+ if(!contactOnly&&!coldProductOnly&&!mobileNavigationOnly){
  await evaluate(`document.querySelector('#tour').scrollIntoView({behavior:'instant'});document.querySelector('#load-tour').click()`);await until(`window.sienna?.ready===true`,150);await until(`window.sienna.frames>0`,120);
  assert.equal(await evaluate(`sienna.productCount`),17);assert.equal(await evaluate(`sienna.partsCount`),32);assert.equal(await evaluate(`sienna.mode`),'orbit');assert.equal(await evaluate('sienna.layout'),'exhibition');assert.equal(await evaluate('sienna.wallCount'),0);assert.equal(await evaluate('sienna.hasRoof'),false);assert.equal(await evaluate('sienna.overviewFraming.fits'),true,'Desktop overview crops the exhibition');await shot('exhibition-overview.png');await evaluate(`sienna.goRoom('master')`);assert.equal(await evaluate('sienna.mode'),'walk');await shot('tour-master.png');
  const bedPoint=await evaluate(`sienna.productScreenPoint('LV463-B02')`);await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:bedPoint.x,y:bedPoint.y});await send('Input.dispatchMouseEvent',{type:'mousePressed',x:bedPoint.x,y:bedPoint.y,button:'left',clickCount:1});await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:bedPoint.x,y:bedPoint.y,button:'left',clickCount:1});assert.equal(await evaluate('sienna.selected'),'LV463-B02','Actual raycast furniture click failed');await evaluate(`document.querySelector('#close-selection').click()`);

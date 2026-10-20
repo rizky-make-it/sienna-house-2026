@@ -59,6 +59,13 @@ This repository and website are public, including Blender files, models, and cat
 
 ## Controls
 
+- On smartphones, use the fixed bottom shortcuts for 3D tour, Collection, and Contact.
+  The Jump to a zone selector opens any of the five zones without a sideways swipe.
+- In Walk mode, drag the left joystick to move and swipe the view with the other
+  thumb to look around. Movement stops when released, interrupted, or off screen.
+- Use + / − to zoom, or pinch in Overview and product inspection. Expand the viewer
+  for a distraction-free display (including iPhone); tap × to return to the page.
+- Product details sit below the 3D canvas on phones, leaving the joystick unobstructed.
 - Exhibition tour: start in Orbit exhibition mode. Choose a zone, then drag to look.
   Click the canvas and use WASD / arrow keys, or use the on-screen controls to walk.
 - Click furniture to view its SKU, dimensions, and drawer/door interactions.

@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>SIENNA — The Open Gallery</title>
   <meta name="description" content="An open furniture exhibition for SIENNA 2026. Explore four display zones, 14 interactive 3D products, and the details of Warm Brown ash.">
   <meta name="author" content="Muhammad Rizky">
   <meta name="theme-color" content="#eeeae1"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="style.css?v=open-gallery-1">
+  <link rel="stylesheet" href="style.css?v=mobile-nav-1">
   <script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.js","three/addons/":"./assets/vendor/three/addons/"}}</script>
-  <script type="module" src="app.js?v=english-1"></script>
+  <script type="module" src="app.js?v=mobile-nav-1"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -34,7 +34,9 @@
 <section id="tour" class="tour-section" aria-labelledby="tour-title">
   <div class="section-heading wrap"><div><p class="eyebrow">EXPLORE AT YOUR OWN PACE</p><h2 id="tour-title">On display.</h2></div><p>Orbit the exhibition, then move in closer.<br>Open drawers and discover the construction details.</p></div>
   <div class="tour-shell wrap">
-    <aside class="room-sidebar"><p class="eyebrow">CHOOSE A DISPLAY ZONE</p><div class="room-list" role="group" aria-label="Switch display zone">
+    <aside class="room-sidebar"><p class="eyebrow">CHOOSE A DISPLAY ZONE</p>
+      <label class="mobile-zone-picker" for="zone-select"><span>JUMP TO A ZONE</span><select id="zone-select" data-zone-select><option value="overview">All zones · Overview</option><option value="master">01 · King suite</option><option value="guest">02 · Queen & reading</option><option value="living">03 · Living collection</option><option value="dining">04 · Dining collection</option><option value="hall">05 · Open gallery aisle</option></select></label>
+      <div class="room-list" role="group" aria-label="Switch display zone">
       <button data-room="master" aria-pressed="false"><span>01</span>King suite <i>↗</i></button>
       <button data-room="guest" aria-pressed="false"><span>02</span>Queen & reading <i>↗</i></button>
       <button data-room="living" aria-pressed="false"><span>03</span>Living collection <i>↗</i></button>
@@ -48,13 +50,17 @@
         <circle id="map-dot" cx="99" cy="84" r="4" fill="#c8a569"/></svg>
       <p class="sidebar-note">No walls or roof. Map outlines mark display zones, not physical partitions.<br>Product dimensions use metric units.</p>
     </aside>
-    <div class="viewer" id="viewer">
+    <div class="viewer" id="viewer" role="region" aria-label="3D exhibition viewer" tabindex="-1">
+      <div class="viewer-stage" id="viewer-stage">
       <canvas id="canvas" tabindex="0" aria-label="Interactive open 3D exhibition. Drag to orbit; select a zone and use WASD or the on-screen controls to walk."></canvas>
       <div id="load-screen" class="load-screen"><img src="assets/master.jpg?v=open-gallery-1" alt="Preview of the open SIENNA exhibition" width="960" height="540"><div><span class="eyebrow">THE COLLECTION, IN THE OPEN</span><h3>A new<br><em>perspective.</em></h3><button id="load-tour" class="button light">Start exhibition tour <span>↗</span></button><p id="load-status" role="status">The exhibition model loads when opened</p></div></div>
-      <div class="viewer-top" hidden id="viewer-tools"><span id="view-label">SIENNA / The Open Gallery</span><div class="view-modes" role="group" aria-label="Camera mode"><button id="walk-mode" aria-pressed="false">Walk</button><button id="orbit-mode" aria-pressed="true">Orbit exhibition</button><button id="back-house" hidden>← Exhibition</button></div><button id="help-toggle" aria-label="Controls guide" aria-expanded="false">?</button><button id="fullscreen" aria-label="Full screen">⛶</button></div>
-      <div id="viewer-help" class="viewer-help" hidden><strong>Take a closer look</strong><p>Orbit mode shows the entire exhibition. Drag to rotate, and scroll or pinch to zoom. Choose a zone or select Walk to move with W A S D, the arrow keys, or the on-screen controls.</p><p>Click a piece for details, then select Inspect in 3D to orbit the product. Use Open drawers / doors to animate its moving parts.</p><p>All zones are open, with no partitions. Press Esc to leave product inspection.</p><button id="close-help" class="text-button">Got it <span>×</span></button></div>
+      <div class="viewer-top" hidden id="viewer-tools"><span id="view-label">SIENNA / The Open Gallery</span><select id="expanded-zone-select" data-zone-select aria-label="Jump to a display zone"></select><div class="view-modes" role="group" aria-label="Camera mode"><button id="walk-mode" aria-pressed="false">Walk</button><button id="orbit-mode" aria-pressed="true">Overview</button><button id="back-house" hidden>← Exhibition</button></div><button id="help-toggle" aria-label="Controls guide" aria-expanded="false">?</button><button id="fullscreen" aria-label="Expand viewer" aria-pressed="false">⛶</button></div>
+      <div id="viewer-help" class="viewer-help" hidden><strong>Take a closer look</strong><p>Choose a zone to go straight to its display. Overview shows the whole exhibition: drag to rotate, pinch to zoom, or use + and −.</p><p>In Walk mode, drag the joystick with your left thumb to move. Swipe the view with your other thumb to look around. On a keyboard, use W A S D or the arrow keys.</p><p>Tap furniture for details below the view, then select Inspect in 3D. Use Open drawers / doors to animate moving parts. Expand the viewer for more space; use × to return.</p><button id="close-help" class="text-button">Got it <span>×</span></button></div>
       <div class="viewer-bottom" id="viewer-bottom" hidden><span id="view-hint">DRAG TO LOOK · CLICK A PIECE</span><button id="reset-view" aria-label="Reset camera">↺ Reset</button></div>
       <div class="walk-pad" id="walk-pad" hidden role="group" aria-label="Exhibition movement"><button data-move="forward" aria-label="Walk forward">↑</button><button data-move="left" aria-label="Walk left">←</button><button data-move="back" aria-label="Walk backward">↓</button><button data-move="right" aria-label="Walk right">→</button></div>
+      <div class="touch-walk" id="touch-walk" hidden><button type="button" id="joystick" class="joystick" aria-label="Movement joystick: drag to walk, or use arrow keys" aria-describedby="joystick-label"><span class="joystick-cross" aria-hidden="true">＋</span><span id="joystick-thumb" class="joystick-thumb" aria-hidden="true"></span></button><span id="joystick-label">DRAG TO WALK</span></div>
+      <div class="zoom-controls" id="zoom-controls" hidden role="group" aria-label="Zoom controls"><button type="button" id="zoom-in" aria-label="Zoom in">＋</button><button type="button" id="zoom-out" aria-label="Zoom out">−</button></div>
+      </div>
       <div id="selection" class="selection" hidden><button id="close-selection" aria-label="Close product details">×</button><p class="eyebrow" id="selected-sku"></p><h3 id="selected-name"></h3><p id="selected-dimensions"></p><div class="selection-actions"><button id="inspect-product" class="button small">Inspect in 3D ↗</button><button id="open-parts" class="text-button" hidden>Open drawers / doors</button></div><button type="button" id="download-product" data-download-request="the SIENNA GLB model" aria-haspopup="dialog" aria-controls="contact-dialog">Request GLB via WhatsApp ↗</button></div>
     </div>
   </div><p class="tour-footnote wrap">The exhibition opens in Orbit mode. Choose a zone to walk through it. The web model uses real-time lighting; the gallery below features original Blender EEVEE 4K renders.</p>
@@ -83,6 +89,7 @@
   <button type="button" class="download-request" data-download-request="the SIENNA website source and GitHub Pages hosting configuration" aria-haspopup="dialog" aria-controls="contact-dialog"><span><b>Website source project</b><small>Website source & hosting configuration</small></span><span>SOURCE ↗</span></button>
   <p>All file requests go through WhatsApp. You can explore the gallery and exhibition without contacting the creator.</p></div></section>
 </main>
+<nav class="mobile-shortcuts" aria-label="Quick navigation"><a href="#tour" data-enter-tour><span aria-hidden="true">◈</span>3D tour</a><a href="#collection"><span aria-hidden="true">▦</span>Collection</a><a href="#downloads"><span aria-hidden="true">↗</span>Contact</a></nav>
 <footer><a class="wordmark" href="#">SIENNA</a><p>THE COLLECTION, ON DISPLAY.</p><div><p class="creator-credit">Created by <strong>Muhammad Rizky</strong><span>Website & 3D visualisation</span></p><span>A visual study based on SIENNA Catalogue 2026.</span><span>Not manufacturer CAD. Hidden details and exhibition styling are interpreted.</span><a href="credits.html">Sources & licences ↗</a></div><small>2026 / THE OPEN GALLERY</small></footer>
 <dialog id="render-dialog" aria-labelledby="render-caption"><button id="close-render" aria-label="Close render">×</button><img id="render-image" alt=""><div><p id="render-caption"></p><button type="button" id="render-download" class="button light" data-download-request="the SIENNA 4K PNG render" aria-haspopup="dialog" aria-controls="contact-dialog">Request 4K PNG ↗</button></div></dialog>
 <dialog id="contact-dialog" class="contact-dialog" aria-labelledby="contact-title" aria-describedby="contact-intro contact-note">

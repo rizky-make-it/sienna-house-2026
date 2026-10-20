@@ -19,7 +19,7 @@ export function buildWhatsAppUrl(number, request, pageUrl) {
 }
 
 export function syncDialogScroll() {
-  document.body.style.overflow = document.querySelector('dialog[open]') ? 'hidden' : '';
+  document.body.style.overflow = document.querySelector('dialog[open]') || document.body.classList.contains('tour-expanded') ? 'hidden' : '';
 }
 
 export function getContactWhatsAppUrl(config, request, pageUrl) {

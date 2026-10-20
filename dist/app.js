@@ -1,5 +1,5 @@
-import {initTour,start,inspect} from './tour.js?v=english-1';
-import {initContact,syncDialogScroll} from './contact.js?v=english-1';
+import {initTour,start,inspect} from './tour.js?v=mobile-nav-1';
+import {initContact,syncDialogScroll} from './contact.js?v=mobile-nav-1';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let allProducts=[],filter='all',noticeTimer;
 const roomCategory=p=>p.sku.startsWith('LV463-B')?'bedroom':p.sku.startsWith('LV446')?'living':'dining';
@@ -16,7 +16,9 @@ initTour();
 initContact();
 fetch('assets/products.json').then(r=>{if(!r.ok)throw Error('products');return r.json();}).then(data=>{allProducts=data;renderProducts();}).catch(()=>{$('#no-products').hidden=false;$('#no-products').textContent='The product list could not be loaded. Please reload the page.';});
 $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;$$('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderProducts();}));$('#product-search').addEventListener('input',renderProducts);
-$('.menu-toggle').addEventListener('click',()=>{const open=$('.menu-toggle').getAttribute('aria-expanded')!=='true';$('.menu-toggle').setAttribute('aria-expanded',String(open));$('#nav').classList.toggle('open',open);$('.menu-toggle span').textContent=open?'−':'＋';});$$('#nav a').forEach(a=>a.addEventListener('click',()=>{$('#nav').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle span').textContent='＋';}));
+function closeMenu(){$('#nav').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle span').textContent='＋';}
+$('.menu-toggle').addEventListener('click',()=>{const open=$('.menu-toggle').getAttribute('aria-expanded')!=='true';$('.menu-toggle').setAttribute('aria-expanded',String(open));$('#nav').classList.toggle('open',open);$('.menu-toggle span').textContent=open?'−':'＋';});$$('#nav a,.mobile-shortcuts a').forEach(a=>a.addEventListener('click',closeMenu));
+document.addEventListener('click',event=>{if(!event.target.closest('.header'))closeMenu();});document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMenu();});
 $$('[data-enter-tour]').forEach(a=>a.addEventListener('click',()=>start()));
 document.addEventListener('tour:notice',e=>{const n=$('#notification');clearTimeout(noticeTimer);n.textContent=e.detail;n.hidden=false;noticeTimer=setTimeout(()=>n.hidden=true,4500);});
 const dialog=$('#render-dialog'),labels={master:'The Open Gallery / Exhibition overview',dining:'Dining collection / Eight-seat table & buffet',living:'Living collection / Coffee table & TV unit',guest:'Queen & reading display / Queen Bed'};
