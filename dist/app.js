@@ -1,4 +1,5 @@
 import {initTour,start,inspect} from './tour.js';
+import {initContact,syncDialogScroll} from './contact.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let allProducts=[],filter='all',noticeTimer;
 const roomCategory=p=>p.sku.startsWith('LV463-B')?'bedroom':p.sku.startsWith('LV446')?'living':'dining';
@@ -12,6 +13,7 @@ function renderProducts(){
   $('#no-products').hidden=products.length>0;
 }
 initTour();
+initContact();
 fetch('assets/products.json').then(r=>{if(!r.ok)throw Error('products');return r.json();}).then(data=>{allProducts=data;renderProducts();}).catch(()=>{$('#no-products').hidden=false;$('#no-products').textContent='Daftar produk belum berhasil dimuat. Silakan muat ulang halaman.';});
 $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;$$('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderProducts();}));$('#product-search').addEventListener('input',renderProducts);
 $('.menu-toggle').addEventListener('click',()=>{const open=$('.menu-toggle').getAttribute('aria-expanded')!=='true';$('.menu-toggle').setAttribute('aria-expanded',String(open));$('#nav').classList.toggle('open',open);$('.menu-toggle span').textContent=open?'−':'＋';});$$('#nav a').forEach(a=>a.addEventListener('click',()=>{$('#nav').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle span').textContent='＋';}));
@@ -19,5 +21,5 @@ $$('[data-enter-tour]').forEach(a=>a.addEventListener('click',()=>start()));
 document.addEventListener('tour:notice',e=>{const n=$('#notification');clearTimeout(noticeTimer);n.textContent=e.detail;n.hidden=false;noticeTimer=setTimeout(()=>n.hidden=true,4500);});
 const dialog=$('#render-dialog'),labels={master:'Master bedroom / King Bed',dining:'Dining room / Eight-seat table & buffet',living:'Living room / Coffee table & TV unit',guest:'Guest & reading / Queen Bed'};
 let lastRenderTrigger;
-$$('[data-render]').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.render;lastRenderTrigger=button;$('#render-image').src='assets/'+name+'.jpg';$('#render-image').alt=labels[name]+' — Blender Cycles 4K';$('#render-caption').textContent=labels[name]+' · Cycles · 3840 × 2160';$('#render-download').href='downloads/'+name+'-4k.png';$('#render-download').download='sienna-'+name+'-4k.png';dialog.showModal();document.body.style.overflow='hidden';}));
-$('#close-render').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});dialog.addEventListener('close',()=>{document.body.style.overflow='';lastRenderTrigger?.focus({preventScroll:true});});
+$$('[data-render]').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.render;lastRenderTrigger=button;$('#render-image').src='assets/'+name+'.jpg';$('#render-image').alt=labels[name]+' — Blender Cycles 4K';$('#render-caption').textContent=labels[name]+' · Cycles · 3840 × 2160';$('#render-download').dataset.downloadRequest='render PNG 4K '+labels[name];dialog.showModal();syncDialogScroll();}));
+$('#close-render').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});dialog.addEventListener('close',()=>{syncDialogScroll();lastRenderTrigger?.focus({preventScroll:true});});

@@ -5,6 +5,23 @@ Website 3D terpisah untuk SIENNA Catalogue 2026. Tidak mengganti proyek Ruang.
 Repository publik: https://github.com/rizky-make-it/sienna-house-2026
 Website GitHub Pages: https://rizky-make-it.github.io/sienna-house-2026/
 
+Website dan visualisasi 3D dibuat oleh Muhammad Rizky.
+
+## Permintaan file via WhatsApp
+
+Semua tombol permintaan file membuka pop-up kontak, lalu menyiapkan pesan
+WhatsApp yang menyebut file atau SKU yang dipilih. Tidak ada pesan yang dikirim
+otomatis. Nomor tujuan publik diatur pada dist/contact-config.js dalam format
+internasional (kode negara, tanpa awalan 0). Saat ini placeholder=true dengan nomor
+contoh 6200000000000: pop-up tetap berfungsi, tetapi tidak membuka chat ke nomor
+contoh. Untuk mengaktifkan chat, ganti whatsappNumber dengan nomor asli lalu ubah
+placeholder menjadi false. Deployment akan ditolak bila format nomor tidak valid.
+Kredit kreator ditampilkan pada footer dan halaman lisensi.
+
+Ini pengalihan alur UI, bukan kontrol akses. Repositori publik dan aset statis
+tetap dapat diakses langsung; model GLB juga diperlukan oleh room tour browser.
+Jangan menyimpan data rahasia pada repository atau folder dist.
+
 ## Menjalankan lokal
 
 1. Install Node.js 20+.
@@ -33,7 +50,7 @@ Repository dan website ini publik; file Blender, model, serta katalog dapat diun
 - Room tour: geser untuk menoleh, WASD / panah setelah klik canvas, atau tombol
   layar untuk berjalan. Rute antarruang melalui Gallery Hall dan bukaan living–dining.
 - Klik furnitur untuk SKU, dimensi dan interaksi laci/pintu.
-- Inspeksi produk: orbit / pan / zoom, buka/tutup bagian, unduh GLB per SKU.
+- Inspeksi produk: orbit / pan / zoom, buka/tutup bagian, minta GLB per SKU via WhatsApp.
 - Orbit rumah: pandangan keseluruhan tanpa atap. Esc / Rumah untuk kembali.
 - Foto kecil pada daftar produk berasal dari katalog asli; model 3D merupakan
   rekonstruksi. Renders galeri berasal dari Blender Cycles, bukan gambar AI.

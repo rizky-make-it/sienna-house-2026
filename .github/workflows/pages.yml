@@ -27,7 +27,7 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v6
       - name: Validate models, assets, and 4K renders
-        run: node scripts/check.mjs
+        run: npm test
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload website only

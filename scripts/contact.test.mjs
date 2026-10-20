@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { normalizeWhatsAppNumber, buildWhatsAppUrl, getContactWhatsAppUrl } from '../dist/contact.js';
+
+test('accepts international format and removes display punctuation', () => {
+  assert.equal(normalizeWhatsAppNumber('+1 (555) 123-4567'), '15551234567');
+  assert.equal(normalizeWhatsAppNumber('62 812.3456.7890'), '6281234567890');
+});
+
+test('rejects missing, local-only, malformed, and excessively long numbers', () => {
+  for (const number of ['', null, undefined, '081234567890', '62812invalid3456', '123', '1234567890123456', 'https://example.com']) {
+    assert.throws(() => normalizeWhatsAppNumber(number));
+  }
+});
+
+test('prepares a WhatsApp draft with the selected file and creator credit', () => {
+  const request = 'model GLB King Bed (LV463-B02) & render 4K';
+  const url = new URL(buildWhatsAppUrl('15551234567', request, 'https://example.com/sienna/?private=value#downloads'));
+  assert.equal(url.origin, 'https://wa.me');
+  assert.equal(url.pathname, '/15551234567');
+  const message = url.searchParams.get('text');
+  assert.ok(message.includes('Muhammad Rizky'));
+  assert.ok(message.includes(request));
+  assert.ok(message.includes('https://example.com/sienna/'));
+  assert.ok(!message.includes('private=value'));
+  assert.ok(!message.includes('#downloads'));
+});
+
+test('encodes file names as text, not extra URL parameters', () => {
+  const request = 'render "Dining" & text=another message + #4K';
+  const url = new URL(buildWhatsAppUrl('15551234567', request, 'https://example.com/sienna/'));
+  assert.deepEqual([...url.searchParams.keys()], ['text']);
+  assert.ok(url.searchParams.get('text').includes(request));
+});
+
+test('placeholder mode never links a visitor to an example phone number', () => {
+  assert.equal(getContactWhatsAppUrl({placeholder:true,whatsappNumber:'6200000000000'}, 'seluruh file', 'https://example.com/'), null);
+});
+
+test('live contact mode prepares a link only after the placeholder is removed', () => {
+  const url = new URL(getContactWhatsAppUrl({placeholder:false,whatsappNumber:'15551234567'}, 'file Blender', 'https://example.com/'));
+  assert.equal(url.pathname, '/15551234567');
+  assert.ok(url.searchParams.get('text').includes('file Blender'));
+});

@@ -48,7 +48,7 @@ function selectProduct(root){
   $('#selection').hidden=false;$('#inspect-product').hidden=mode==='product';
   const moving=movingParts(root);$('#open-parts').hidden=!moving.length;$('#open-parts').textContent=moving.some(p=>p.userData.open)?'Tutup laci / pintu':'Buka laci / pintu';
   $('#open-parts').setAttribute('aria-pressed',String(moving.some(p=>p.userData.open)));
-  $('#download-product').href=product.model;$('#download-product').download=product.sku+'.glb';emit('tour:selection',product);
+  $('#download-product').dataset.downloadRequest='model GLB '+product.name+' ('+product.sku+')';emit('tour:selection',product);
 }
 function setupPart(part){
   if(part.userData.basePosition)return;
@@ -136,7 +136,7 @@ export async function start(){
     canvas.addEventListener('pointerup',event=>{if(!pointer)return;if(!dragging&&Math.hypot(event.clientX-pointer.x,event.clientY-pointer.y)<6){const rect=canvas.getBoundingClientRect();pointerNDC.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointerNDC,camera);const hits=ray.intersectObject(mode==='product'?inspection:house,true);const root=hits.length&&findRoot(hits[0].object);if(root)selectProduct(root);}pointer=null;});
     canvas.addEventListener('pointercancel',()=>{pointer=null;});canvas.addEventListener('wheel',event=>{if(mode==='walk'){event.preventDefault();camera.fov=THREE.MathUtils.clamp(camera.fov+event.deltaY*.025,30,82);camera.updateProjectionMatrix();needsRender=true;}},{passive:false});
     canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();note('Konteks grafis terhenti. Muat ulang halaman untuk membuka model kembali.');});
-    window.addEventListener('keydown',event=>{if(!ready||!visible||/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))return;if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code)&&viewer.contains(document.activeElement)){event.preventDefault();keys.add(event.code);}if(event.code==='Escape'){keys.clear();if(mode==='product')goRoom(currentRoom);else closeSelection();}});
+    window.addEventListener('keydown',event=>{if(!ready||!visible||document.querySelector('dialog[open]')||/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName))return;if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code)&&viewer.contains(document.activeElement)){event.preventDefault();keys.add(event.code);}if(event.code==='Escape'){keys.clear();if(mode==='product')goRoom(currentRoom);else closeSelection();}});
     window.addEventListener('keyup',event=>keys.delete(event.code));window.addEventListener('blur',()=>keys.clear());document.addEventListener('visibilitychange',()=>{if(document.hidden)keys.clear();});
     for(const button of $$('[data-move]')){const stop=e=>{keys.delete(button.dataset.move);e.preventDefault();};button.addEventListener('pointerdown',event=>{event.preventDefault();button.setPointerCapture(event.pointerId);keys.add(button.dataset.move);});button.addEventListener('pointerup',stop);button.addEventListener('pointercancel',stop);button.addEventListener('lostpointercapture',()=>keys.delete(button.dataset.move));}
     requestAnimationFrame(animate);emit('tour:ready',{products:roots.length,parts:parts.length});

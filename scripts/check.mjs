@@ -1,5 +1,8 @@
 import fs from 'node:fs/promises';import path from 'node:path';import{fileURLToPath}from'node:url';import assert from'node:assert/strict';
+import {contactConfig} from '../dist/contact-config.js';import {normalizeWhatsAppNumber} from '../dist/contact.js';
 const root=fileURLToPath(new URL('../',import.meta.url)),dist=path.join(root,'dist'),preliminary=process.argv.includes('--preliminary');
+assert.equal(contactConfig.creator,'Muhammad Rizky');assert.equal(typeof contactConfig.placeholder,'boolean');if(!preliminary)normalizeWhatsAppNumber(contactConfig.whatsappNumber);
+const html=await fs.readFile(path.join(dist,'index.html'),'utf8');assert.ok(html.includes('Dibuat oleh <strong>Muhammad Rizky</strong>'));assert.ok(html.includes('id="contact-dialog"'));assert.ok(!/\sdownload(?:\s|=|>)/.test(html),'Direct download links must use the WhatsApp request dialog');assert.ok(!/href=["'](?:downloads\/|assets\/[^"']*\.glb)/.test(html),'A direct file URL bypasses the request dialog');
 const products=JSON.parse(await fs.readFile(path.join(dist,'assets/products.json'),'utf8')),scene=JSON.parse(await fs.readFile(path.join(dist,'assets/scene.json'),'utf8'));
 assert.equal(products.length,14);assert.equal(new Set(products.map(p=>p.sku)).size,14);assert.equal(scene.placements.length,17);assert.equal(Object.keys(scene.rooms).length,5);
 const glb=await fs.readFile(path.join(dist,'assets/sienna-house.glb'));assert.equal(glb.toString('ascii',0,4),'glTF');const json=JSON.parse(glb.toString('utf8',20,20+glb.readUInt32LE(12)));const nodes=json.nodes||[];
