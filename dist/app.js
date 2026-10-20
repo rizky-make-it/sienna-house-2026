@@ -1,4 +1,4 @@
-import {initTour,start,inspect} from './tour.js?v=open-gallery-1';
+import {initTour,start,inspect} from './tour.js?v=open-gallery-2';
 import {initContact,syncDialogScroll} from './contact.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let allProducts=[],filter='all',noticeTimer;

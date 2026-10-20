@@ -14,7 +14,7 @@ const canvas=$('#canvas'),viewer=$('#viewer'),ray=new THREE.Raycaster(),pointerN
 const emit=(name,detail)=>document.dispatchEvent(new CustomEvent(name,{detail}));
 const note=text=>emit('tour:notice',text);
 function showControls(){for(const id of ['viewer-tools','viewer-bottom','walk-pad'])$('#'+id).hidden=false;$('#load-screen').hidden=true;}
-function resize(){if(!renderer)return;const w=viewer.clientWidth,h=viewer.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();needsRender=true;}
+function resize(){if(!renderer)return;const w=viewer.clientWidth,h=viewer.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();if(ready&&mode==='orbit')frameOverview();needsRender=true;}
 function lookAt(target){camera.lookAt(target);const e=new THREE.Euler().setFromQuaternion(camera.quaternion,'YXZ');yaw=e.y;pitch=e.x;}
 function setPressed(){
   $('#walk-mode').setAttribute('aria-pressed',mode==='walk');$('#orbit-mode').setAttribute('aria-pressed',mode==='orbit');
@@ -34,10 +34,27 @@ export function goRoom(id,boot=false){
   const loc=coords?coords[0]:[4.9,5.3,1.65];const target=coords?coords[1]:[7,5.3,1.65];
   camera.position.copy(P(...loc));lookAt(P(target[0],target[1],1.4));closeSelection();setPressed();keys.clear();needsRender=true;
 }
+function exhibitionCorners(){
+  const box=new THREE.Box3().setFromObject(house),points=[];
+  for(const x of[box.min.x,box.max.x])for(const y of[box.min.y,box.max.y])for(const z of[box.min.z,box.max.z])points.push(new THREE.Vector3(x,y,z));
+  return points;
+}
+function frameOverview(){
+  const view=sceneInfo.overview;camera.fov=view.fov;camera.aspect=viewer.clientWidth/viewer.clientHeight;camera.updateProjectionMatrix();
+  const target=new THREE.Vector3().fromArray(view.target),direction=new THREE.Vector3().fromArray(view.position).sub(target).normalize();
+  const right=new THREE.Vector3(0,1,0).cross(direction).normalize(),up=direction.clone().cross(right).normalize();
+  const vertical=Math.tan(THREE.MathUtils.degToRad(camera.fov/2)),horizontal=vertical*camera.aspect;
+  let distance=3;
+  for(const point of exhibitionCorners()){
+    const relative=point.sub(target);
+    distance=Math.max(distance,relative.dot(direction)+Math.max(Math.abs(relative.dot(right))/horizontal,Math.abs(relative.dot(up))/vertical));
+  }
+  distance*=1.07;orbit.target.copy(target);camera.position.copy(target).addScaledVector(direction,distance);
+  orbit.minDistance=3;orbit.maxDistance=Math.max(45,distance*2.5);orbit.maxPolarAngle=Math.PI*.49;orbit.update();
+}
 function overview(boot=false){
   if(!boot)inspect.latest=Symbol('overview-navigation');
-  clearInspection();mode='orbit';orbit.enabled=true;const view=sceneInfo.overview;camera.fov=view.fov;camera.updateProjectionMatrix();
-  orbit.target.fromArray(view.target);const distanceScale=Math.max(1,1.35/camera.aspect);camera.position.fromArray(view.position).sub(orbit.target).multiplyScalar(distanceScale).add(orbit.target);orbit.minDistance=3;orbit.maxDistance=Math.max(45,35*distanceScale);orbit.maxPolarAngle=Math.PI*.49;orbit.update();
+  clearInspection();mode='orbit';orbit.enabled=true;frameOverview();
   $$('[data-room]').forEach(b=>b.setAttribute('aria-pressed','false'));
   $('#view-label').textContent='SIENNA / The Open Gallery';closeSelection();setPressed();keys.clear();needsRender=true;
 }
@@ -153,6 +170,7 @@ export function initTour(){
   // Read-only diagnostics also support repeatable browser verification.
   window.sienna={get ready(){return ready},get mode(){return mode},get room(){return currentRoom},get selected(){return selectionSku},get productCount(){return roots.length},get partsCount(){return parts.length},get frames(){return frameCount},get position(){return camera?camera.position.toArray():null},get renderInfo(){return renderer?.info.render},inspect,goRoom,overview,toggleParts,canStand,
     get layout(){return sceneInfo?.layout},get wallCount(){return sceneInfo?.walls},get hasRoof(){return sceneInfo?.roof},get floorBounds(){return sceneInfo?.floorBounds},
+    get overviewFraming(){if(!ready||mode!=='orbit')return null;camera.updateMatrixWorld();const points=exhibitionCorners().map(p=>p.project(camera)),maxX=Math.max(...points.map(p=>Math.abs(p.x))),maxY=Math.max(...points.map(p=>Math.abs(p.y)));return{fits:maxX<=1&&maxY<=1,maxX,maxY};},
     get orientation(){return camera?.quaternion.toArray()},get fov(){return camera?.fov},
     productScreenPoint(sku){const root=roots.find(r=>r.userData.product_id===sku);if(!root)return null;camera.updateMatrixWorld();const center=new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3()).project(camera),r=canvas.getBoundingClientRect();return{x:r.left+(center.x+1)*r.width/2,y:r.top+(1-center.y)*r.height/2};},
     select:sku=>selectProduct(roots.find(r=>r.userData.product_id===sku)),
