@@ -13,7 +13,7 @@ export function buildWhatsAppUrl(number, request, pageUrl) {
   const page = new URL(pageUrl);
   page.search = '';
   page.hash = '';
-  const message = `Halo ${contactConfig.creator}, saya melihat website SIENNA dan ingin meminta ${request}.\n\nReferensi: ${page.href}\nTerima kasih.`;
+  const message = `Hi ${contactConfig.creator}, I visited the SIENNA website and would like to request ${request}.\n\nReference: ${page.href}\nThank you.`;
   url.searchParams.set('text', message);
   return url.href;
 }
@@ -38,7 +38,7 @@ export function initContact() {
     if (!trigger) return;
     event.preventDefault();
     lastTrigger = trigger;
-    const request = trigger.dataset.downloadRequest || 'seluruh file proyek SIENNA';
+    const request = trigger.dataset.downloadRequest || 'all SIENNA project files';
     document.querySelector('#contact-request').textContent = request;
     try {
       const href = getContactWhatsAppUrl(contactConfig, request, location.href);
@@ -54,11 +54,11 @@ export function initContact() {
       unavailable.hidden = false;
     }
     unavailable.textContent = contactConfig.placeholder
-      ? `Mode demo — nomor contoh +${contactConfig.whatsappNumber} belum aktif. Chat tersedia setelah nomor Muhammad Rizky ditambahkan.`
-      : 'Nomor WhatsApp belum dikonfigurasi. Tautan chat akan tersedia setelah kontak kreator ditambahkan.';
+      ? `Demo mode — the example number +${contactConfig.whatsappNumber} is not active. Chat will be available once Muhammad Rizky's number is added.`
+      : "The WhatsApp number is not configured yet. Chat will be available once the creator's contact details are added.";
     document.querySelector('#contact-note').textContent = contactConfig.placeholder
-      ? 'Ini pratinjau fitur kontak. Tidak ada pesan yang dikirim atau nomor acak yang dihubungi.'
-      : 'Pesan permintaan disiapkan otomatis. Kamu tetap menekan Kirim di WhatsApp.';
+      ? 'This is a contact feature preview. No messages are sent and no random phone numbers are contacted.'
+      : 'Your request is drafted automatically. You still choose Send in WhatsApp.';
     if (!dialog.open) dialog.showModal();
     syncDialogScroll();
     (link.hasAttribute('href') ? link : document.querySelector('#close-contact')).focus({ preventScroll: true });

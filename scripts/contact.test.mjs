@@ -14,12 +14,15 @@ test('rejects missing, local-only, malformed, and excessively long numbers', () 
 });
 
 test('prepares a WhatsApp draft with the selected file and creator credit', () => {
-  const request = 'model GLB King Bed (LV463-B02) & render 4K';
+  const request = 'the King Bed GLB model (LV463-B02) & 4K render';
   const url = new URL(buildWhatsAppUrl('15551234567', request, 'https://example.com/sienna/?private=value#downloads'));
   assert.equal(url.origin, 'https://wa.me');
   assert.equal(url.pathname, '/15551234567');
   const message = url.searchParams.get('text');
   assert.ok(message.includes('Muhammad Rizky'));
+  assert.ok(message.startsWith('Hi Muhammad Rizky, I visited the SIENNA website and would like to request '));
+  assert.ok(message.includes('\n\nReference: '));
+  assert.ok(message.endsWith('\nThank you.'));
   assert.ok(message.includes(request));
   assert.ok(message.includes('https://example.com/sienna/'));
   assert.ok(!message.includes('private=value'));
@@ -34,11 +37,11 @@ test('encodes file names as text, not extra URL parameters', () => {
 });
 
 test('placeholder mode never links a visitor to an example phone number', () => {
-  assert.equal(getContactWhatsAppUrl({placeholder:true,whatsappNumber:'6200000000000'}, 'seluruh file', 'https://example.com/'), null);
+  assert.equal(getContactWhatsAppUrl({placeholder:true,whatsappNumber:'6200000000000'}, 'all files', 'https://example.com/'), null);
 });
 
 test('live contact mode prepares a link only after the placeholder is removed', () => {
-  const url = new URL(getContactWhatsAppUrl({placeholder:false,whatsappNumber:'15551234567'}, 'file Blender', 'https://example.com/'));
+  const url = new URL(getContactWhatsAppUrl({placeholder:false,whatsappNumber:'15551234567'}, 'the Blender file', 'https://example.com/'));
   assert.equal(url.pathname, '/15551234567');
-  assert.ok(url.searchParams.get('text').includes('file Blender'));
+  assert.ok(url.searchParams.get('text').includes('the Blender file'));
 });

@@ -28,19 +28,24 @@ try{
   }else{
    assert.equal(href,null);assert.equal(await evaluate(`document.querySelector('#contact-unavailable').hidden`),false);
    assert.equal(await evaluate(`document.querySelector('#contact-whatsapp').getAttribute('aria-disabled')`),'true');
-   if(contactConfig.placeholder)assert.ok((await evaluate(`document.querySelector('#contact-unavailable').textContent`)).includes('Mode demo'));
+   if(contactConfig.placeholder)assert.ok((await evaluate(`document.querySelector('#contact-unavailable').textContent`)).includes('Demo mode'));
   }
   await evaluate(`document.querySelector('#close-contact').click()`);
   await until(`!document.querySelector('#contact-dialog').open&&document.activeElement===document.querySelector(${s})`,5);
  };
  await send('Page.enable');await send('Runtime.enable');await send('Network.enable');await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await send('Page.navigate',{url:siteUrl});
  await until(`document.readyState==='complete'&&document.querySelectorAll('.product-card').length===14&&document.querySelector('.hero-image').naturalWidth>0`);await evaluate('document.fonts.ready.then(()=>true)');await pause(500);
+ assert.equal(await evaluate('document.documentElement.lang'),'en');
+ assert.equal(await evaluate(`document.querySelector('#product-search').placeholder`),'Search name / SKU');
+ assert.ok((await evaluate(`document.querySelector('.product-card').getAttribute('aria-label')`)).startsWith('Inspect in 3D: '));
+ assert.ok((await evaluate(`document.querySelector('.creator-credit').textContent`)).startsWith('Created by Muhammad Rizky'));
+ const credits=await evaluate(`fetch('credits.html').then(r=>r.text())`);assert.match(credits,/<html lang="en">/);assert.ok(credits.includes('Sources & licences'));
  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true,'Desktop overflow');await shot('desktop.png');await shot('desktop-full.png',true);
  for(const[category,count]of[['bedroom',6],['living',5],['dining',3],['all',14]]){await evaluate(`document.querySelector('[data-filter="${category}"]').click()`);assert.equal(await evaluate(`document.querySelectorAll('.product-card').length`),count,'Filter '+category);}
  await evaluate(`document.querySelector('#product-search').value='LV446-L12';document.querySelector('#product-search').dispatchEvent(new Event('input'))`);assert.equal(await evaluate(`document.querySelectorAll('.product-card').length`),1);
  await evaluate(`document.querySelector('#product-search').value='not-a-product';document.querySelector('#product-search').dispatchEvent(new Event('input'))`);assert.equal(await evaluate(`document.querySelector('#no-products').hidden`),false);
  await evaluate(`document.querySelector('#product-search').value='';document.querySelector('#product-search').dispatchEvent(new Event('input'))`);
- for(const room of['master','dining','living','guest']){await evaluate(`document.querySelector('[data-render="${room}"]').click()`);assert.equal(await evaluate(`document.querySelector('#render-dialog').open`),true);await until(`document.querySelector('#render-image').complete&&document.querySelector('#render-image').naturalWidth>0`);assert.match(await evaluate(`document.querySelector('#render-download').dataset.downloadRequest`),/render PNG 4K/);await testContact('#render-download');assert.equal(await evaluate(`document.querySelector('#render-dialog').open`),true);assert.equal(await evaluate(`document.body.style.overflow`),'hidden');await evaluate(`document.querySelector('#close-render').click()`);}
+ for(const room of['master','dining','living','guest']){await evaluate(`document.querySelector('[data-render="${room}"]').click()`);assert.equal(await evaluate(`document.querySelector('#render-dialog').open`),true);await until(`document.querySelector('#render-image').complete&&document.querySelector('#render-image').naturalWidth>0`);assert.match(await evaluate(`document.querySelector('#render-download').dataset.downloadRequest`),/4K PNG render/);await testContact('#render-download');assert.equal(await evaluate(`document.querySelector('#render-dialog').open`),true);assert.equal(await evaluate(`document.body.style.overflow`),'hidden');await evaluate(`document.querySelector('#close-render').click()`);}
  assert.equal(await evaluate(`document.querySelectorAll('a[download]').length`),0);assert.equal(await evaluate(`document.querySelector('.creator-credit').textContent.includes('Muhammad Rizky')`),true);assert.equal(await evaluate(`document.querySelector('meta[name="author"]').content`),'Muhammad Rizky');
  await testContact('.request-all');for(let index=1;index<=6;index++)await testContact('.download-list .download-request:nth-of-type('+index+')');
  console.log('QA desktop, 14 products, galleries, creator credit and all file-request dialogs passed');
