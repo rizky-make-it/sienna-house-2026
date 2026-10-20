@@ -84,42 +84,6 @@
     "articulations": 0
   },
   {
-    "sku": "LV463-D01",
-    "name": "8-seat Rectangle Dining Table",
-    "dimensions": [
-      2200,
-      1000,
-      760
-    ],
-    "room": "dining",
-    "model": "assets/models/LV463-D01.glb",
-    "articulations": 0
-  },
-  {
-    "sku": "LV463-D21",
-    "name": "3 Drawers 4 Doors Buffet",
-    "dimensions": [
-      1800,
-      450,
-      820
-    ],
-    "room": "dining",
-    "model": "assets/models/LV463-D21.glb",
-    "articulations": 7
-  },
-  {
-    "sku": "LV463-L21",
-    "name": "1 Drawer & Shelf Console",
-    "dimensions": [
-      1400,
-      400,
-      760
-    ],
-    "room": "hall",
-    "model": "assets/models/LV463-L21.glb",
-    "articulations": 1
-  },
-  {
     "sku": "LV446-L01",
     "name": "Rectangle Coffee Table with Shelf",
     "dimensions": [
@@ -166,5 +130,41 @@
     "room": "living",
     "model": "assets/models/LV446-L31.glb",
     "articulations": 4
+  },
+  {
+    "sku": "LV463-D01",
+    "name": "8-seat Rectangle Dining Table",
+    "dimensions": [
+      2200,
+      1000,
+      760
+    ],
+    "room": "dining",
+    "model": "assets/models/LV463-D01.glb",
+    "articulations": 0
+  },
+  {
+    "sku": "LV463-D21",
+    "name": "3 Drawers 4 Doors Buffet",
+    "dimensions": [
+      1800,
+      450,
+      820
+    ],
+    "room": "dining",
+    "model": "assets/models/LV463-D21.glb",
+    "articulations": 7
+  },
+  {
+    "sku": "LV463-L21",
+    "name": "1 Drawer & Shelf Console",
+    "dimensions": [
+      1400,
+      400,
+      760
+    ],
+    "room": "hall",
+    "model": "assets/models/LV463-L21.glb",
+    "articulations": 1
   }
 ]

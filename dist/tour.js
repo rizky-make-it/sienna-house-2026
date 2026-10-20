@@ -6,9 +6,9 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const P=(x,y,z)=>new THREE.Vector3(x,z,-y);
-const roomNames={master:'Master bedroom',guest:'Guest & reading',living:'Living room',dining:'Dining room',hall:'Gallery hall'};
+const roomNames={master:'King suite display',guest:'Queen & reading display',living:'Living collection',dining:'Dining collection',hall:'Open gallery aisle'};
 const keys=new Set(),roots=[],parts=[],animations=[];
-let renderer,scene,camera,orbit,house,ceiling,inspection,inspectionSku,ground,loader,sceneInfo,products,selected,currentRoom='master',mode='walk',ready=false,loading=false,lastTime=0,yaw=0,pitch=0,visible=true,selectionSku;
+let renderer,scene,camera,orbit,house,inspection,inspectionSku,ground,loader,sceneInfo,products,selected,currentRoom='master',mode='walk',ready=false,loading=false,lastTime=0,yaw=0,pitch=0,visible=true,selectionSku;
 let pointer=null,dragging=false,rafId,frameCount=0,uiTick=0,needsRender=true;
 const canvas=$('#canvas'),viewer=$('#viewer'),ray=new THREE.Raycaster(),pointerNDC=new THREE.Vector2();
 const emit=(name,detail)=>document.dispatchEvent(new CustomEvent(name,{detail}));
@@ -19,6 +19,7 @@ function lookAt(target){camera.lookAt(target);const e=new THREE.Euler().setFromQ
 function setPressed(){
   $('#walk-mode').setAttribute('aria-pressed',mode==='walk');$('#orbit-mode').setAttribute('aria-pressed',mode==='orbit');
   $('#walk-pad').hidden=mode!=='walk';$('#back-house').hidden=mode!=='product';$('#walk-mode').hidden=mode==='product';$('#orbit-mode').hidden=mode==='product';
+  $('#map-dot').style.opacity=mode==='walk'?'1':'0';
   $('#view-hint').textContent=mode==='walk'?'GESER UNTUK MELIHAT · WASD UNTUK BERJALAN':mode==='product'?'GESER UNTUK ORBIT · SCROLL / CUBIT UNTUK ZOOM':'GESER UNTUK ORBIT · SCROLL / CUBIT UNTUK ZOOM';
 }
 function closeSelection(){selected=null;selectionSku=null;$('#selection').hidden=true;}
@@ -28,16 +29,17 @@ export function goRoom(id,boot=false){
   if(!boot)inspect.latest=Symbol('room-navigation');
   currentRoom=id;$$('[data-room]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.room===id));$('#view-label').textContent=roomNames[id];
   if(!ready)return;
-  clearInspection();ceiling.visible=true;mode='walk';orbit.enabled=false;camera.fov=55;camera.near=.07;camera.updateProjectionMatrix();
+  clearInspection();mode='walk';orbit.enabled=false;camera.fov=55;camera.near=.07;camera.updateProjectionMatrix();
   const r=sceneInfo.rooms[id],coords=r.camera;
   const loc=coords?coords[0]:[4.9,5.3,1.65];const target=coords?coords[1]:[7,5.3,1.65];
   camera.position.copy(P(...loc));lookAt(P(target[0],target[1],1.4));closeSelection();setPressed();keys.clear();needsRender=true;
 }
-function overview(){
-  inspect.latest=Symbol('overview-navigation');
-  clearInspection();ceiling.visible=false;mode='orbit';orbit.enabled=true;camera.fov=48;camera.updateProjectionMatrix();
-  camera.position.set(17,16,7);orbit.target.set(6,.3,-5.25);orbit.minDistance=3;orbit.maxDistance=30;orbit.maxPolarAngle=Math.PI*.48;orbit.update();
-  $('#view-label').textContent='The connected house';closeSelection();setPressed();keys.clear();needsRender=true;
+function overview(boot=false){
+  if(!boot)inspect.latest=Symbol('overview-navigation');
+  clearInspection();mode='orbit';orbit.enabled=true;const view=sceneInfo.overview;camera.fov=view.fov;camera.updateProjectionMatrix();
+  orbit.target.fromArray(view.target);const distanceScale=Math.max(1,1.35/camera.aspect);camera.position.fromArray(view.position).sub(orbit.target).multiplyScalar(distanceScale).add(orbit.target);orbit.minDistance=3;orbit.maxDistance=Math.max(45,35*distanceScale);orbit.maxPolarAngle=Math.PI*.49;orbit.update();
+  $$('[data-room]').forEach(b=>b.setAttribute('aria-pressed','false'));
+  $('#view-label').textContent='SIENNA / The Open Gallery';closeSelection();setPressed();keys.clear();needsRender=true;
 }
 function findRoot(obj){while(obj){if(obj.userData.kind==='product')return obj;obj=obj.parent;}return null;}
 function movingParts(root){const list=[];root.traverse(o=>{if(o.userData.kind==='articulation')list.push(o);});return list;}
@@ -70,7 +72,7 @@ export async function inspect(sku){
   note('Memuat '+product.name+'…');
   try{
     const gltf=await loader.loadAsync(product.model);if(inspect.latest!==requestId){disposeModel(gltf.scene);return;}
-    clearInspection();inspection=gltf.scene;inspectionSku=sku;scene.add(inspection);house.visible=false;ceiling.visible=false;ground.visible=true;mode='product';orbit.enabled=true;keys.clear();
+    clearInspection();inspection=gltf.scene;inspectionSku=sku;scene.add(inspection);house.visible=false;ground.visible=true;mode='product';orbit.enabled=true;keys.clear();
     inspection.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}if(o.userData.kind==='articulation')setupPart(o);});
     const box=new THREE.Box3().setFromObject(inspection),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
     ground.position.set(center.x,box.min.y-.008,center.z);ground.scale.setScalar(Math.max(3,size.length()*1.2));
@@ -81,7 +83,7 @@ export async function inspect(sku){
 }
 function findProductNode(parent){let found;parent.traverse(o=>{if(!found&&o.userData.kind==='product')found=o;});return found;}
 function canStand(x,y){
-  const radius=.17;if(x<radius||x>12-radius||y<radius||y>10.5-radius)return false;
+  const radius=.17,[minX,minY,maxX,maxY]=sceneInfo.floorBounds;if(x<minX+radius||x>maxX-radius||y<minY+radius||y>maxY-radius)return false;
   for(const [x1,y1,x2,y2]of sceneInfo.colliders){if(x>x1-radius&&x<x2+radius&&y>y1-radius&&y<y2+radius)return false;}
   for(const placement of sceneInfo.placements){
     if(placement.sku==='LV463-B71')continue;const p=products.find(p=>p.sku===placement.sku);if(!p)continue;
@@ -108,29 +110,28 @@ function animate(time){
   move(dt);if(orbit.enabled)orbit.update();
   if(visible&&(needsRender||animating)){renderer.render(scene,camera);frameCount++;needsRender=false;}
   if(++uiTick%12===0&&mode==='walk'){
-    const x=camera.position.x,y=-camera.position.z;$('#map-dot').setAttribute('cx',5+x/12*230);$('#map-dot').setAttribute('cy',207-y/10.5*202);
+    const x=camera.position.x,y=-camera.position.z,[minX,minY,maxX,maxY]=sceneInfo.floorBounds;$('#map-dot').setAttribute('cx',5+(x-minX)/(maxX-minX)*230);$('#map-dot').setAttribute('cy',207-(y-minY)/(maxY-minY)*202);
     const room=Object.entries(sceneInfo.rooms).find(([,r])=>x>=r.bounds[0]&&y>=r.bounds[1]&&x<=r.bounds[2]&&y<=r.bounds[3]);
     if(room&&room[0]!==currentRoom){currentRoom=room[0];$('#view-label').textContent=roomNames[currentRoom];$$('[data-room]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.room===currentRoom));}
   }
 }
-export async function start(){
+export async function start(options={}){
   if(ready)return;if(loading)return start.promise;
-  loading=true;$('#load-tour').disabled=true;$('#load-status').textContent='Menyiapkan rumah…';
+  loading=true;$('#load-tour').disabled=true;$('#load-status').textContent='Menyiapkan pameran…';
   start.promise=(async()=>{try{
-    [sceneInfo,products]=await Promise.all([fetch('assets/scene.json').then(r=>r.json()),fetch('assets/products.json').then(r=>r.json())]);
+    [sceneInfo,products]=await Promise.all([fetch('assets/scene.json?v=open-gallery-1').then(r=>r.json()),fetch('assets/products.json').then(r=>r.json())]);
     renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<760?1.5:1.75));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-    scene=new THREE.Scene();scene.background=new THREE.Color('#cbd0c2');camera=new THREE.PerspectiveCamera(55,1,.07,150);
+    scene=new THREE.Scene();scene.background=new THREE.Color('#e5e1d8');camera=new THREE.PerspectiveCamera(55,1,.07,150);
     const pmrem=new THREE.PMREMGenerator(renderer);const envRoom=new RoomEnvironment();const environment=pmrem.fromScene(envRoom,.05);scene.environment=environment.texture;envRoom.dispose();pmrem.dispose();scene.environmentIntensity=.55;
     scene.add(new THREE.HemisphereLight(0xfff5df,0xb1a58b,1.1));
     const sunlight=new THREE.DirectionalLight(0xffeed2,2.4);sunlight.position.set(-3,12,-16);sunlight.target.position.set(6,0,-5);sunlight.castShadow=true;sunlight.shadow.mapSize.set(innerWidth<760?1024:2048,innerWidth<760?1024:2048);Object.assign(sunlight.shadow.camera,{left:-10,right:10,top:10,bottom:-10,near:.1,far:40});sunlight.shadow.bias=-.0002;sunlight.shadow.normalBias=.025;scene.add(sunlight,sunlight.target);
     const fill=new THREE.DirectionalLight(0xe5efff,.65);fill.position.set(15,8,6);scene.add(fill);
     const draco=new DRACOLoader();draco.setDecoderPath('assets/vendor/draco/');loader=new GLTFLoader();loader.setDRACOLoader(draco);
-    const gltf=await loader.loadAsync('assets/sienna-house.glb',event=>{$('#load-status').textContent=event.total?'Memuat rumah '+Math.round(event.loaded/event.total*100)+'%…':'Memuat model rumah…';});
+    const gltf=await loader.loadAsync('assets/sienna-house.glb?v=open-gallery-1',event=>{$('#load-status').textContent=event.total?'Memuat pameran '+Math.round(event.loaded/event.total*100)+'%…':'Memuat model pameran…';});
     house=gltf.scene;scene.add(house);house.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}if(o.userData.kind==='product')roots.push(o);if(o.userData.kind==='articulation'){setupPart(o);parts.push(o);}});
-    ceiling=new THREE.Mesh(new THREE.PlaneGeometry(12,10.5),new THREE.MeshStandardMaterial({color:0xd5d1c2,roughness:.9}));ceiling.rotation.x=Math.PI/2;ceiling.position.set(6,3.04,-5.25);scene.add(ceiling);
     ground=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshStandardMaterial({color:0xe3ded1,roughness:.9}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.visible=false;scene.add(ground);
     orbit=new OrbitControls(camera,canvas);orbit.enableDamping=true;orbit.dampingFactor=.08;orbit.enabled=false;orbit.addEventListener('change',()=>{needsRender=true;});
-    ready=true;showControls();resize();goRoom(currentRoom,true);new ResizeObserver(resize).observe(viewer);new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible)keys.clear();else needsRender=true;},{threshold:0}).observe(viewer);
+    ready=true;showControls();resize();if(options.room)goRoom(options.room,true);else overview(true);new ResizeObserver(resize).observe(viewer);new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible)keys.clear();else needsRender=true;},{threshold:0}).observe(viewer);
     canvas.addEventListener('pointerdown',event=>{canvas.focus({preventScroll:true});pointer={x:event.clientX,y:event.clientY,lastX:event.clientX,lastY:event.clientY,id:event.pointerId};dragging=false;if(mode==='walk')canvas.setPointerCapture(event.pointerId);});
     canvas.addEventListener('pointermove',event=>{if(!pointer||pointer.id!==event.pointerId)return;const dx=event.clientX-pointer.lastX,dy=event.clientY-pointer.lastY;if(Math.hypot(event.clientX-pointer.x,event.clientY-pointer.y)>6)dragging=true;if(mode==='walk'&&dragging){yaw-=dx*.004;pitch=THREE.MathUtils.clamp(pitch-dy*.004,-1.25,1.25);camera.quaternion.setFromEuler(new THREE.Euler(pitch,yaw,0,'YXZ'));needsRender=true;}pointer.lastX=event.clientX;pointer.lastY=event.clientY;});
     canvas.addEventListener('pointerup',event=>{if(!pointer)return;if(!dragging&&Math.hypot(event.clientX-pointer.x,event.clientY-pointer.y)<6){const rect=canvas.getBoundingClientRect();pointerNDC.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointerNDC,camera);const hits=ray.intersectObject(mode==='product'?inspection:house,true);const root=hits.length&&findRoot(hits[0].object);if(root)selectProduct(root);}pointer=null;});
@@ -143,14 +144,15 @@ export async function start(){
   }catch(error){console.error(error);$('#load-tour').disabled=false;$('#load-status').textContent='Model 3D belum bisa dibuka. Coba lagi atau unduh GLB.';note('WebGL belum tersedia atau model gagal dimuat. Render dan unduhan tetap dapat digunakan.');loading=false;}})();return start.promise;
 }
 export function initTour(){
-  $('#load-tour').addEventListener('click',start);$$('[data-room]').forEach(b=>b.addEventListener('click',()=>{goRoom(b.dataset.room);if(!ready)start();}));
-  $('#walk-mode').addEventListener('click',()=>goRoom(currentRoom));$('#orbit-mode').addEventListener('click',overview);$('#back-house').addEventListener('click',()=>goRoom(currentRoom));$('#reset-view').addEventListener('click',()=>mode==='product'?inspect(inspectionSku):mode==='orbit'?overview():goRoom(currentRoom));
+  $('#load-tour').addEventListener('click',()=>start());$$('[data-room]').forEach(b=>b.addEventListener('click',()=>{if(!ready)start({room:b.dataset.room});else goRoom(b.dataset.room);}));
+  $('#walk-mode').addEventListener('click',()=>goRoom(currentRoom));$('#orbit-mode').addEventListener('click',()=>overview());$('#back-house').addEventListener('click',()=>goRoom(currentRoom));$('#reset-view').addEventListener('click',()=>mode==='product'?inspect(inspectionSku):mode==='orbit'?overview():goRoom(currentRoom));
   $('#inspect-product').addEventListener('click',()=>inspect(selectionSku));$('#open-parts').addEventListener('click',toggleParts);$('#close-selection').addEventListener('click',closeSelection);
   $('#help-toggle').addEventListener('click',()=>{const help=$('#viewer-help');help.hidden=!help.hidden;$('#help-toggle').setAttribute('aria-expanded',String(!help.hidden));});$('#close-help').addEventListener('click',()=>{$('#viewer-help').hidden=true;$('#help-toggle').setAttribute('aria-expanded','false');});
   $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(viewer.requestFullscreen)await viewer.requestFullscreen();else note('Mode layar penuh tidak tersedia pada browser ini.');}catch{note('Browser tidak mengizinkan layar penuh.');}});
   $('#map-toggle').addEventListener('click',()=>{const map=$('#floor-map'),hidden=!map.hasAttribute('hidden');map.toggleAttribute('hidden',hidden);$('#map-toggle').setAttribute('aria-expanded',String(!hidden));$('#map-toggle span').textContent=hidden?'＋':'−';});
   // Read-only diagnostics also support repeatable browser verification.
   window.sienna={get ready(){return ready},get mode(){return mode},get room(){return currentRoom},get selected(){return selectionSku},get productCount(){return roots.length},get partsCount(){return parts.length},get frames(){return frameCount},get position(){return camera?camera.position.toArray():null},get renderInfo(){return renderer?.info.render},inspect,goRoom,overview,toggleParts,canStand,
+    get layout(){return sceneInfo?.layout},get wallCount(){return sceneInfo?.walls},get hasRoof(){return sceneInfo?.roof},get floorBounds(){return sceneInfo?.floorBounds},
     get orientation(){return camera?.quaternion.toArray()},get fov(){return camera?.fov},
     productScreenPoint(sku){const root=roots.find(r=>r.userData.product_id===sku);if(!root)return null;camera.updateMatrixWorld();const center=new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3()).project(camera),r=canvas.getBoundingClientRect();return{x:r.left+(center.x+1)*r.width/2,y:r.top+(1-center.y)*r.height/2};},
     select:sku=>selectProduct(roots.find(r=>r.userData.product_id===sku)),

@@ -1,4 +1,4 @@
-import {initTour,start,inspect} from './tour.js';
+import {initTour,start,inspect} from './tour.js?v=open-gallery-1';
 import {initContact,syncDialogScroll} from './contact.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let allProducts=[],filter='all',noticeTimer;
@@ -19,7 +19,7 @@ $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.
 $('.menu-toggle').addEventListener('click',()=>{const open=$('.menu-toggle').getAttribute('aria-expanded')!=='true';$('.menu-toggle').setAttribute('aria-expanded',String(open));$('#nav').classList.toggle('open',open);$('.menu-toggle span').textContent=open?'−':'＋';});$$('#nav a').forEach(a=>a.addEventListener('click',()=>{$('#nav').classList.remove('open');$('.menu-toggle').setAttribute('aria-expanded','false');$('.menu-toggle span').textContent='＋';}));
 $$('[data-enter-tour]').forEach(a=>a.addEventListener('click',()=>start()));
 document.addEventListener('tour:notice',e=>{const n=$('#notification');clearTimeout(noticeTimer);n.textContent=e.detail;n.hidden=false;noticeTimer=setTimeout(()=>n.hidden=true,4500);});
-const dialog=$('#render-dialog'),labels={master:'Master bedroom / King Bed',dining:'Dining room / Eight-seat table & buffet',living:'Living room / Coffee table & TV unit',guest:'Guest & reading / Queen Bed'};
+const dialog=$('#render-dialog'),labels={master:'The Open Gallery / Exhibition overview',dining:'Dining collection / Eight-seat table & buffet',living:'Living collection / Coffee table & TV unit',guest:'Queen & reading display / Queen Bed'};
 let lastRenderTrigger;
-$$('[data-render]').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.render;lastRenderTrigger=button;$('#render-image').src='assets/'+name+'.jpg';$('#render-image').alt=labels[name]+' — Blender Cycles 4K';$('#render-caption').textContent=labels[name]+' · Cycles · 3840 × 2160';$('#render-download').dataset.downloadRequest='render PNG 4K '+labels[name];dialog.showModal();syncDialogScroll();}));
+$$('[data-render]').forEach(button=>button.addEventListener('click',()=>{const name=button.dataset.render;lastRenderTrigger=button;$('#render-image').src='assets/'+name+'.jpg?v=open-gallery-1';$('#render-image').alt=labels[name]+' — Blender EEVEE 4K';$('#render-caption').textContent=labels[name]+' · EEVEE · 3840 × 2160';$('#render-download').dataset.downloadRequest='render PNG 4K '+labels[name];dialog.showModal();syncDialogScroll();}));
 $('#close-render').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});dialog.addEventListener('close',()=>{syncDialogScroll();lastRenderTrigger?.focus({preventScroll:true});});

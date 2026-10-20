@@ -2,25 +2,33 @@
   "dining-4k.png": {
     "width": 3840,
     "height": 2160,
-    "bytes": 9305480,
-    "sha256": "6041a3093131fc7d8de3e74c192fd0e09767399707ec86c16de9ff32a7f08ab3"
+    "bytes": 9103953,
+    "sha256": "7ee7c837f18ba0b61840c2b121573e7b5f10ef1b031678cf60aa92a21cc33d38",
+    "layout": "exhibition",
+    "engine": "BLENDER_EEVEE"
   },
   "guest-4k.png": {
     "width": 3840,
     "height": 2160,
-    "bytes": 9229085,
-    "sha256": "1345345bc5b6dc337013bca483604b992c04d21cca1d9e9a8446947d8a0dea48"
+    "bytes": 8747121,
+    "sha256": "51d1f5e42ada533471dc24065972bd6081ada6f1ea86b903d01b8da332762bb7",
+    "layout": "exhibition",
+    "engine": "BLENDER_EEVEE"
   },
   "living-4k.png": {
     "width": 3840,
     "height": 2160,
-    "bytes": 8635950,
-    "sha256": "64e49a2553b9fc8823ec8fc4436c6ad54e53695509dd3bb7775c80bc54d4a3ab"
+    "bytes": 8249727,
+    "sha256": "a3abe02492395bdbeb067565ad8a6c62cdc5cb906e9e2943fbbfac568659598f",
+    "layout": "exhibition",
+    "engine": "BLENDER_EEVEE"
   },
   "master-4k.png": {
     "width": 3840,
     "height": 2160,
-    "bytes": 9493281,
-    "sha256": "bfbc468e5c95ffb2a5985fafee0cfd353f81f28d67b44163a19f806d2467da68"
+    "bytes": 7110726,
+    "sha256": "e4f36ae42a03d1ccdf8df95a039d6c327820b36e9864da7e409ee02bd21def87",
+    "layout": "exhibition",
+    "engine": "BLENDER_EEVEE"
   }
 }

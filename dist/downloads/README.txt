@@ -1,4 +1,4 @@
-# SIENNA — A home, considered.
+# SIENNA — The Open Gallery
 
 Website 3D terpisah untuk SIENNA Catalogue 2026. Tidak mengganti proyek Ruang.
 
@@ -6,6 +6,17 @@ Repository publik: https://github.com/rizky-make-it/sienna-house-2026
 Website GitHub Pages: https://rizky-make-it.github.io/sienna-house-2026/
 
 Website dan visualisasi 3D dibuat oleh Muhammad Rizky.
+
+## Pameran terbuka
+
+Versi terbaru adalah pameran furnitur tanpa tembok, sekat, kusen, tirai, atau atap.
+Empat zona display dibedakan melalui lantai inset dan penanda informasi, dengan
+jalur tengah serta sirkulasi di sisi luar. Ukuran dan 14 SKU katalog tetap sama;
+17 penempatan produk dan 32 pivot laci/pintu dipertahankan.
+
+Browser mulai dalam mode Orbit pameran. Pilih zona atau Jelajah untuk berjalan.
+Collider tembok lama dihapus; collision furnitur dan kaki display tetap aktif.
+Versi rumah lama disimpan terpisah dalam workspace, tidak dihapus.
 
 ## Permintaan file via WhatsApp
 
@@ -47,27 +58,33 @@ Repository dan website ini publik; file Blender, model, serta katalog dapat diun
 
 ## Penggunaan
 
-- Room tour: geser untuk menoleh, WASD / panah setelah klik canvas, atau tombol
-  layar untuk berjalan. Rute antarruang melalui Gallery Hall dan bukaan living–dining.
+- Exhibition tour: mulai dari Orbit pameran. Pilih zona, lalu geser untuk menoleh,
+  WASD / panah setelah klik canvas, atau tombol layar untuk berjalan tanpa sekat.
 - Klik furnitur untuk SKU, dimensi dan interaksi laci/pintu.
 - Inspeksi produk: orbit / pan / zoom, buka/tutup bagian, minta GLB per SKU via WhatsApp.
-- Orbit rumah: pandangan keseluruhan tanpa atap. Esc / Rumah untuk kembali.
+- Orbit pameran: pandangan seluruh display. Esc / Pameran untuk keluar dari inspeksi.
 - Foto kecil pada daftar produk berasal dari katalog asli; model 3D merupakan
-  rekonstruksi. Renders galeri berasal dari Blender Cycles, bukan gambar AI.
+  rekonstruksi. Render galeri terbaru berasal dari Blender EEVEE, bukan gambar AI.
 
 ## File
 
 - dist/: website siap deploy, seluruh asset dan unduhan.
-- dist/downloads/sienna-house.blend: master scene metrik, tekstur terkemas.
+- dist/downloads/sienna-house.blend: master pameran terbuka, metrik, tekstur terkemas.
 - dist/downloads/sienna-project.zip: script Blender + tekstur + metadata.
-- dist/assets/sienna-house.glb: rumah lengkap tanpa atap untuk browser.
+- dist/assets/sienna-house.glb: pameran lengkap tanpa tembok atau atap untuk browser.
 - dist/assets/models/: 14 model produk, satu file per SKU, dengan pivot gerak.
 - dist/downloads/*-4k.png: render lossless asli 3840 × 2160.
 - dist/downloads/render-proof.json: ukuran, resolusi dan SHA-256 setiap render.
 
-Di Blender: file membuka tampilan kamera master / Material Preview. Produk
-dikelompokkan per ruang dan SKU. Marker kamera pada frame 1 / 31 / 61 / 91
-berpindah ke master / dining / living / guest. Numpad 0 keluar/masuk kamera.
+Di Blender: file membuka overview pameran / Material Preview. Produk dikelompokkan
+per zona dan SKU. Marker kamera pada frame 1 / 31 / 61 / 91 berpindah ke overview /
+dining / living / Queen display. Numpad 0 keluar/masuk kamera. File tetap disetel
+untuk Cycles; empat PNG website dirender dengan EEVEE, 64 samples, UHD 4K.
+
+Rebuild dari ZIP: jalankan build_house.py di Blender untuk membuat basis produk,
+lalu buka hasil sienna-house.blend dan jalankan build_exhibition.py. Hasilnya
+sienna-exhibition.blend. Export dengan export_web.py, render dengan
+render_exhibition.py -- all, dan kemas dengan prepare_assets.py --exhibition.
 
 ## Batas interpretasi
 
@@ -77,9 +94,9 @@ Z tinggi, front -Y. Dimensi UI: lebar × kedalaman × tinggi. Untuk bed, lebar a
 Tallboy B51: katalog menulis “2 Over 4 Drawers” tetapi menampilkan empat muka
 laci lebar; model mengikuti foto. Lamp table L11: 550 × 550 × 550 mm pada halaman 5.
 
-Ini studi visual, bukan CAD atau gambar kerja pabrikan. Denah, joinery tersembunyi,
-kursi, sofa, ornamen dan aksesori adalah interpretasi desain. Ruangan kamar King
-dan Queen berbeda agar kedua varian ditampilkan secara fisik dalam satu rumah.
+Ini studi visual, bukan CAD atau gambar kerja pabrikan. Tata pamer, joinery
+tersembunyi, kursi, sofa, ornamen dan aksesori adalah interpretasi desain. King dan
+Queen ditampilkan sebagai dua zona berbeda di dalam satu ruang pamer terbuka.
 
 Browser menggunakan pencahayaan real-time dan environment reflections, bukan
 ray-tracing Cycles. Kualitas bayangan / frame rate tergantung perangkat. WebGL2
